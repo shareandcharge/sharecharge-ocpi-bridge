@@ -21,13 +21,19 @@
   "homepage": "https://github.com/motionwerkGmbH/sharecharge-ocpi-bridge#readme",
   "devDependencies": {
     "@types/chai": "^4.1.4",
+    "@types/express": "^4.16.0",
     "@types/mocha": "^5.2.4",
+    "@types/request-promise-native": "^1.0.15",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2"
   },
   "dependencies": {
-    "@motionwerk/sharecharge-common": "^1.14.0"
+    "@motionwerk/sharecharge-common": "^1.14.0",
+    "express": "^4.16.3",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
+    "rxjs": "^6.2.1"
   }
 }
