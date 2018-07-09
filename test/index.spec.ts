@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import Bridge from '../src/index';
+import Bridge from '../src';
 import { ISession } from '@motionwerk/sharecharge-common/dist/common';
 
 describe('Bridge Interface', () => {

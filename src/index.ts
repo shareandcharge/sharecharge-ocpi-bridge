@@ -1,10 +1,10 @@
 import { Subject } from 'rxjs';
-import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common';
-import { Modules } from './modules/modules';
+import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
+import { OCPI } from './services/ocpi';
 
 export default class Bridge implements IBridge {
 
-    private modules: Modules;
+    private ocpi: OCPI;
 
     private autoStop = new Subject<IResult>();
     public autoStop$ = this.autoStop.asObservable();
@@ -13,7 +13,7 @@ export default class Bridge implements IBridge {
     public cdr$ = this.cdr.asObservable();
 
     constructor() {
-        this.modules = Modules.getInstance();
+        this.ocpi = OCPI.getInstance();
     }
 
     public get name(): string {
@@ -31,6 +31,8 @@ export default class Bridge implements IBridge {
     }
 
     public async start(parameters: ISession): Promise<IResult> {
+        // call ocpi.commands.startSession(evseId);
+        // subscribe to ocpi.commands.sessionStarted$
         return {
             success: true,
             data: {
