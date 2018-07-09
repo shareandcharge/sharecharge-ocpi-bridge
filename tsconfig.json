@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es2017",
+      "strict": true,
+      "noImplicitAny": false,
+      "strictNullChecks": false,
+      "sourceMap": false,
+      "outDir": "dist",
+      "strictFunctionTypes": false,
+  
+      "types": [
+        "node",
+      ],
+      "typeRoots": [
+        "./node_modules/@types"
+      ]
+    },
+    "exclude": [
+      "node_modules",
+      "logs",
+      "test"
+    ]
+  }
+  
