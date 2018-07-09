@@ -7,10 +7,9 @@
       "strictNullChecks": false,
       "sourceMap": false,
       "outDir": "dist",
-      "strictFunctionTypes": false,
-  
+      "strictFunctionTypes": false,  
       "types": [
-        "node",
+        
       ],
       "typeRoots": [
         "./node_modules/@types"

@@ -1,0 +1,33 @@
+{
+  "name": "@motionwerk/sharecharge-ocpi-bridge",
+  "version": "0.0.1",
+  "description": "Open Charge Point Interface (OCPI) bridge for Share & Charge Core Client",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/motionwerkGmbH/sharecharge-ocpi-bridge.git"
+  },
+  "author": "MotionWerk GmbH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/motionwerkGmbH/sharecharge-ocpi-bridge/issues"
+  },
+  "homepage": "https://github.com/motionwerkGmbH/sharecharge-ocpi-bridge#readme",
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.4",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "@motionwerk/sharecharge-common": "^1.14.0"
+  }
+}
