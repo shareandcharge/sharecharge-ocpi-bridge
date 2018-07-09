@@ -22,7 +22,7 @@ export class Versions {
                 try {
                     return this.findUrl(versions);
                 } catch (err) {
-                    throw Error(`Unable to find URL for ${config.version}: ${versions}`);
+                    throw Error(`Unable to find URL for ${config.version}`);
                 }
             } else {
                 throw Error(`${result.status_code} - ${result.status_message}`);

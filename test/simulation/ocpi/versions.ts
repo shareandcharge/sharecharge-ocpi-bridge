@@ -26,12 +26,22 @@ export class Versions {
             ]));
     }
 
+    public noMutualVersion(): void {
+        this.host.get(this.endpoint)
+            .reply(200, ocpiSuccess([
+                {
+                    "version": "2.0",
+                    "url": "https://example.com/ocpi/cpo/2.0/"
+                }
+            ]));
+    }
+
     public ocpiError(): void {
         this.host.get(this.endpoint).reply(200, ocpiError());
     }
 
     public httpError(): void {
-        this.host.get(this.endpoint).reply(400)
+        this.host.get(this.endpoint).reply(400, 'Bad Request');
     }
 
 }
