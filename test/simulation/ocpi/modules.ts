@@ -9,7 +9,7 @@ export class Modules {
 
     constructor() {
         this.endpoint = '/';
-        this.host = nock(config.host);
+        this.host = nock(config.host + config.version);
     }
 
     public success(): void {
