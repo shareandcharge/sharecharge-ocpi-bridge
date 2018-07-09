@@ -2,9 +2,18 @@ export let config = {
     version: '2.1.1',
     host: 'http://localhost:3000/ocpi/cpo/',
     headers: {
+        // fake!
         Authorization: 'Token 123'
     },
+    credentials: {
+        url: 'http://localhost:3001/ocpi/emsp/versions/',
+        // fake!
+        token: '',
+        party_id: 'SNC',
+        country_code: 'DE',
+        business_details: {
+            name: 'Share & Charge'
+        }
+    },
     // fake!
-    TOKEN_A: '69169100-ff32-4313-8b98-f7d2e29bd96b',
-    TOKEN_B: 'f1d73bba-3b12-44d8-b0e4-b62d31bf6c9d',
 }

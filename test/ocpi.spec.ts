@@ -1,6 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { OCPI } from '../src/services/ocpi';
+import { generateUUID } from '../src/helpers/toolKit';
 import { Simulator } from './simulation/simulator';
 
 describe('OCPI', () => {
@@ -68,10 +69,15 @@ describe('OCPI', () => {
     });
 
     context('#credentials', async () => {
-        it('should return token on GET /credentials ', async () => {
+        it('should return TOKEN_C on GET /credentials ', async () => {
             simulator.credentials.getSuccess();
             const result = await ocpi.credentials.get();
             expect(result.token).to.equal('ebf3b399-779f-4497-9b9d-ac6ad3cc44d2');
+        });
+        it('should return TOKEN_C on POST /credentials (registration)', async () => {
+            simulator.credentials.postSuccess();
+            const result = await ocpi.credentials.post();
+            expect(result.token).to.equal('e345383a-ba4c-4514-bc99-e0152ceea4c5')
         });
     });
 
