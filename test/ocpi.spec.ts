@@ -49,7 +49,30 @@ describe('OCPI', () => {
     });
 
     context('#modules', () => {
-
+        it('should return object of modules for given version', async () => {
+            simulator.modules.success();
+            const result = await ocpi.modules.pull();
+            expect(Object.keys(result).length).to.equal(2);
+            expect(result.credentials).to.equal('https://example.com/ocpi/cpo/2.0/credentials/');
+        });
+        it('should throw if OCPI response not 1000', async () => {
+            simulator.modules.ocpiError();
+            try {
+                await ocpi.modules.pull();
+                expect.fail();
+            } catch (err) {
+                expect(err.message).to.equal('PULL modules: 2000 - Generic client error');
+            }
+        });
+        it('should throw if HTTP response not 2xx', async () => {
+            simulator.modules.httpError();
+            try {
+                await ocpi.modules.pull();
+                expect.fail();
+            } catch (err) {
+                expect(err.message).to.equal('PULL modules: 500 - "Internal server error"');
+            }
+        });
     });
 
 });
