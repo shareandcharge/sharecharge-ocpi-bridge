@@ -1,12 +1,18 @@
+import { Router, Request, Response } from 'express';
 import { send } from '../../services/send';
 import ICredentials from './interfaces/iCredentials';
 import IConfig from '../../interfaces/iConfig';
+import authenticate from '../../middleware/authenticate';
 
 const config: IConfig = require('../../../config/config.json');
 
 export class Credentials {
 
-    constructor() {}
+    router: Router;
+
+    constructor() {
+        this.router = Router();
+    }
 
     /**
      * Get credentials of Charge Point Operator
@@ -43,6 +49,13 @@ export class Credentials {
         } catch (err) {
             throw Error(`POST credentials: ${err.message}`);
         }
+    }
+
+    public serve(): Router {
+        this.router.get('/credentials', authenticate, async (req: Request, res: Response) => {
+            res.send(config.msp.credentials);
+        });
+        return this.router;
     }
     
 }

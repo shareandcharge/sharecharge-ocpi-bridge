@@ -20,7 +20,10 @@ export class OCPI {
 
     private createRoutes(): void {
         app.use('/ocpi/emsp/', this.versions.serve());
-        app.use(`/ocpi/emsp/${config.version}/`, this.modules.serve());
+        app.use(`/ocpi/emsp/${config.version}/`, 
+            this.modules.serve(),
+            this.credentials.serve()
+        );
     }
     
     public startServer(callback = () => {}): void {

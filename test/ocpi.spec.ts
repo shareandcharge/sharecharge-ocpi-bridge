@@ -152,51 +152,82 @@ describe('OCPI', () => {
     });
 
     context('#credentials', async () => {
-        it('should return TOKEN_C on GET /credentials ', async () => {
-            simulator.credentials.getSuccess();
-            const result = await ocpi.credentials.get();
-            expect(result.token).to.equal('ebf3b399-779f-4497-9b9d-ac6ad3cc44d2');
+        // CLIENT
+        context('CPO', () => {
+            it('should return TOKEN_C on GET /credentials ', async () => {
+                simulator.credentials.getSuccess();
+                const result = await ocpi.credentials.get();
+                expect(result.token).to.equal('ebf3b399-779f-4497-9b9d-ac6ad3cc44d2');
+            });
+            it('should throw if GET OCPI response not 1000', async () => {
+                simulator.credentials.getOcpiError();
+                try {
+                    await ocpi.credentials.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET credentials: 2000 - Generic client error');
+                }
+            });
+            it('should throw if GET HTTP response not 200', async () => {
+                simulator.credentials.getHttpError();
+                try {
+                    await ocpi.credentials.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET credentials: 400 - "Bad request"');
+                }
+            });
+            it('should return TOKEN_C on POST /credentials (registration)', async () => {
+                simulator.credentials.postSuccess();
+                const result = await ocpi.credentials.post();
+                expect(result.token).to.equal('e345383a-ba4c-4514-bc99-e0152ceea4c5')
+            });
+            it('should throw if POST OCPI response not 1000', async () => {
+                simulator.credentials.postOcpiError();
+                try {
+                    await ocpi.credentials.post();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('POST credentials: 2000 - Generic client error');
+                }
+            });
+            it('should throw if POST HTTP response not 200', async () => {
+                simulator.credentials.postHttpError();
+                try {
+                    await ocpi.credentials.post();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('POST credentials: 500 - "Internal server error"');
+                }
+            });
         });
-        it('should throw if GET OCPI response not 1000', async () => {
-            simulator.credentials.getOcpiError();
-            try {
-                await ocpi.credentials.get();
-                expect.fail();
-            } catch (err) {
-                expect(err.message).to.equal('GET credentials: 2000 - Generic client error');
-            }
-        });
-        it('should throw if GET HTTP response not 200', async () => {
-            simulator.credentials.getHttpError();
-            try {
-                await ocpi.credentials.get();
-                expect.fail();
-            } catch (err) {
-                expect(err.message).to.equal('GET credentials: 400 - "Bad request"');
-            }
-        });
-        it('should return TOKEN_C on POST /credentials (registration)', async () => {
-            simulator.credentials.postSuccess();
-            const result = await ocpi.credentials.post();
-            expect(result.token).to.equal('e345383a-ba4c-4514-bc99-e0152ceea4c5')
-        });
-        it('should throw if POST OCPI response not 1000', async () => {
-            simulator.credentials.postOcpiError();
-            try {
-                await ocpi.credentials.post();
-                expect.fail();
-            } catch (err) {
-                expect(err.message).to.equal('POST credentials: 2000 - Generic client error');
-            }
-        });
-        it('should throw if POST HTTP response not 200', async () => {
-            simulator.credentials.postHttpError();
-            try {
-                await ocpi.credentials.post();
-                expect.fail();
-            } catch (err) {
-                expect(err.message).to.equal('POST credentials: 500 - "Internal server error"');
-            }
+        // SERVER
+        context('eMSP', () => {
+            it('should return TOKEN_B on GET eMSP credentials', async () => {
+                const result = await request({
+                    method: 'GET',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/credentials',
+                    headers: {
+                        Authorization: `Token ${config.msp.credentials.token}`
+                    },
+                    json: true
+                });
+                expect(result.token).to.equal(config.msp.credentials.token);
+            });
+            it('should return 401 if not authorized', async () => {
+                try {
+                    await request({
+                        method: 'GET',
+                        uri: 'http://localhost:3001/ocpi/emsp/2.1.1/credentials',
+                        headers: {
+                            Authorization: 'Token 123'
+                        }
+                    });
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('401 - "Unauthorized"');
+                }
+            });
         });
     });
 
