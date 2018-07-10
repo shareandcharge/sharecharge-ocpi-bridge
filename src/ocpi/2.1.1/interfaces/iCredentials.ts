@@ -6,6 +6,6 @@ export default interface ICredentials {
     business_details: {
         name: string;
         logo?: any;
-        website: string;
+        website?: string;
     }
 }

@@ -1,0 +1,39 @@
+{
+  "version": "2.1.1",
+  "cpo": {
+    "host": "",
+    "headers": {
+      "Authorization": ""
+    }
+  },
+  "msp": {
+    "credentials": {
+      "url": "http://localhost:8543/ocpi/emsp/versions/",
+      "token": "42ce5b50-4cce-4c5d-b7b0-115cfde17497",
+      "party_id": "sc",
+      "country_code": "de",
+      "business_details": {
+        "name": "sc"
+      }
+    },
+    "versions": [
+      {
+        "version": "2.1.1",
+        "url": ""
+      }
+    ],
+    "modules": {
+      "version": "2.1.1",
+      "endpoints": [
+        {
+          "identifier": "credentials",
+          "url": ""
+        },
+        {
+          "identifier": "locations",
+          "url": ""
+        }
+      ]
+    }
+  }
+}
