@@ -5,13 +5,12 @@ import { Modules } from '../ocpi/2.1.1/modules';
 import { Credentials } from '../ocpi/2.1.1/credentials';
 import IConfig from '../interfaces/iConfig';
 
-const config: IConfig = require('../../config/config.json');
-
 export class OCPI {
 
     server: Server;
 
-    constructor(public versions: Versions,
+    constructor(public config: IConfig,
+                public versions: Versions,
                 public modules: Modules,
                 public credentials: Credentials) {
                     this.createRoutes();
@@ -20,7 +19,7 @@ export class OCPI {
 
     private createRoutes(): void {
         app.use('/ocpi/emsp/', this.versions.serve());
-        app.use(`/ocpi/emsp/${config.version}/`, 
+        app.use(`/ocpi/emsp/${this.config.version}/`, 
             this.modules.serve(),
             this.credentials.serve()
         );
@@ -36,13 +35,11 @@ export class OCPI {
 
     private static instance: OCPI;
 
-    public static getInstance(): OCPI {
-        if (!OCPI.instance) {
-            const credentials = new Credentials();
-            const versions = new Versions();
-            const modules = new Modules();
-            OCPI.instance = new OCPI(versions, modules, credentials);
-        }
+    public static getInstance(config: IConfig): OCPI {
+        const credentials = new Credentials(config);
+        const versions = new Versions(config);
+        const modules = new Modules(config);
+        OCPI.instance = new OCPI(config, versions, modules, credentials);
         return OCPI.instance;
     }
 

@@ -2,20 +2,18 @@ import * as nock from 'nock';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
 import IConfig from '../../../src/interfaces/iConfig';
 
-const config: IConfig = require('../../../config/config.json');
-
 export class Versions {
 
-    endpoint: string;
     host: any;
 
-    constructor() {
-        this.endpoint = '/versions';
-        this.host = nock(config.cpo.host);
+    constructor(config: IConfig) {
+        this.host = nock(config.cpo.versions, {
+            reqheaders: config.cpo.headers
+        });
     }
 
     public success(): void {
-        this.host.get(this.endpoint)
+        this.host.get('')
             .reply(200, ocpiSuccess([
                 {
                     "version": "2.1.1",
@@ -29,7 +27,7 @@ export class Versions {
     }
 
     public noMutualVersion(): void {
-        this.host.get(this.endpoint)
+        this.host.get('')
             .reply(200, ocpiSuccess([
                 {
                     "version": "2.0",
@@ -39,11 +37,11 @@ export class Versions {
     }
 
     public ocpiError(): void {
-        this.host.get(this.endpoint).reply(200, ocpiError());
+        this.host.get('').reply(200, ocpiError());
     }
 
     public httpError(): void {
-        this.host.get(this.endpoint).reply(400, 'Bad Request');
+        this.host.get('').reply(400, 'Bad Request');
     }
 
 }

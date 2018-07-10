@@ -2,20 +2,18 @@ import * as nock from 'nock';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
 import IConfig from '../../../src/interfaces/iConfig';
 
-const config: IConfig = require('../../../config/config.json');
-
 export class Modules {
 
-    endpoint: string;
     host: any;
 
-    constructor() {
-        this.endpoint = '/';
-        this.host = nock(config.cpo.host + config.version);
+    constructor(config: IConfig) {
+        this.host = nock(config.cpo.modules, {
+            reqheaders: config.cpo.headers
+        });
     }
 
     public success(): void {
-        this.host.get(this.endpoint)
+        this.host.get('/')
             .reply(200, ocpiSuccess({
                 "version": "2.1.1",
                 "endpoints": [
@@ -32,10 +30,10 @@ export class Modules {
     }
 
     public ocpiError(): void {
-        this.host.get(this.endpoint).reply(200, ocpiError());
+        this.host.get('/').reply(200, ocpiError());
     }
 
     public httpError(): void {
-        this.host.get(this.endpoint).reply(500, 'Internal server error');
+        this.host.get('/').reply(500, 'Internal server error');
     }
 }

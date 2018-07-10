@@ -2,16 +2,16 @@ import * as nock from 'nock';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
 import IConfig from '../../../src/interfaces/iConfig';
 
-const config: IConfig = require('../../../config/config.json');
-
 export class Credentials {
 
     endpoint: string;
     host: any;
 
-    constructor() {
+    constructor(config: IConfig) {
         this.endpoint = '/credentials';
-        this.host = nock(config.cpo.host + config.version);
+        this.host = nock(config.cpo.modules, {
+            reqheaders: config.cpo.headers
+        });
     }
 
     public getSuccess(): void {

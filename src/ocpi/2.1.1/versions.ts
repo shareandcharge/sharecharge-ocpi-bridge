@@ -1,29 +1,34 @@
 import { Router, Request, Response } from 'express';
-import { send } from '../../services/send';
+import * as request from 'request-promise-native';
 import authenticate from '../../middleware/authenticate';
 import IVersions from './interfaces/IVersions';
 import IConfig from '../../interfaces/iConfig';
-
-const config: IConfig = require('../../../config/config.json');
 
 export class Versions {
 
     router: Router;
 
-    constructor() {
+    uri: string;
+
+    constructor(private config: IConfig) {
         this.router = Router();
+        this.uri = this.config.cpo.versions;
     }
 
     public findUrl(versions: IVersions[]): string {
         // select IVersion object that matches config version
-        const version = versions.filter(v => v.version === config.version);
+        const version = versions.filter(v => v.version === this.config.version);
         return version[0].url;
     }
 
     public async get(): Promise<IVersions[]> {
         try {
-            const uri = config.cpo.host + 'versions';
-            const result = await send('GET', uri);
+            const result = await request({
+                method: 'GET', 
+                uri: this.uri,
+                headers: this.config.cpo.headers,
+                json: true
+            });
             if (result.status_code === 1000) {
                 return result.data;
             } else {
@@ -36,7 +41,7 @@ export class Versions {
 
     public serve(): Router {
         this.router.get('/versions', authenticate, async (req: Request, res: Response) => {
-            res.send(config.msp.versions);
+            res.send(this.config.msp.versions);
         });
         return this.router;
     }

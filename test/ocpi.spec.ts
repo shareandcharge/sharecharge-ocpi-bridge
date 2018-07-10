@@ -5,7 +5,7 @@ import { OCPI } from '../src/services/ocpi';
 import IConfig from '../src/interfaces/iConfig';
 import { Simulator } from './simulation/simulator';
 
-const config: IConfig = require('../config/config');
+const config: IConfig = require('./config/config.json');
 
 describe('OCPI', () => {
 
@@ -13,9 +13,9 @@ describe('OCPI', () => {
     let simulator: Simulator;
 
     beforeEach(() => {
-        ocpi = OCPI.getInstance();
+        ocpi = OCPI.getInstance(config);
         ocpi.startServer();
-        simulator = new Simulator();
+        simulator = new Simulator(config);
     });
 
     afterEach(() => {

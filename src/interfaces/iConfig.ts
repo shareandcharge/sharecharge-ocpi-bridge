@@ -4,10 +4,11 @@ import IModules from "../ocpi/2.1.1/interfaces/iModules";
 export default interface Config {
     version: string;
     cpo: {
-        host: string;
+        versions: string;
         headers: {
             Authorization: string;
         };
+        modules: string;
     };
     msp: {
         credentials: {

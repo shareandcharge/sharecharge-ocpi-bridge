@@ -1,19 +1,20 @@
 {
   "version": "2.1.1",
   "cpo": {
-    "host": "",
+    "versions": "",
     "headers": {
       "Authorization": ""
-    }
+    },
+    "modules": ""
   },
   "msp": {
     "credentials": {
-      "url": "http://localhost:8543/ocpi/emsp/versions/",
-      "token": "42ce5b50-4cce-4c5d-b7b0-115cfde17497",
-      "party_id": "sc",
-      "country_code": "de",
+      "url": "",
+      "token": "",
+      "party_id": "",
+      "country_code": "",
       "business_details": {
-        "name": "sc"
+        "name": ""
       }
     },
     "versions": [

@@ -1,19 +1,20 @@
 import { Router, Request, Response } from 'express';
+import * as request from 'request-promise-native';
 import authenticate from '../../middleware/authenticate';
-import { send } from '../../services/send';
 import IModules from './interfaces/iModules';
 import IConfig from '../../interfaces/iConfig';
-
-const config: IConfig = require('../../../config/config.json');
 
 export class Modules {
 
     router: Router;
 
-    constructor() {
-        this.router = Router();
-    }
+    uri: string;
 
+    constructor(private config: IConfig) {
+        this.router = Router();
+        this.uri = this.config.cpo.modules;
+    }
+    
     public createModuleObject(data: IModules): { [key: string]: string } {
         const result = {};
         for (const module of data.endpoints) {
@@ -21,11 +22,15 @@ export class Modules {
         }
         return result;
     }
-
+    
     public async get(): Promise<IModules> {
         try {
-            const uri = config.cpo.host + config.version + '/';
-            const result = await send('GET', uri);
+            const result = await request({
+                method: 'GET', 
+                uri: this.uri,
+                headers: this.config.cpo.headers,
+                json: true
+            });
             if (result.status_code === 1000) {
                 return result.data;
             } else {
@@ -38,7 +43,7 @@ export class Modules {
 
     public serve(): Router {
         this.router.get('/', authenticate, async (req: Request, res: Response) => {
-            res.send(config.msp.modules);
+            res.send(this.config.msp.modules);
         });
         return this.router;
     }

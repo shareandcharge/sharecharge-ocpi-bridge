@@ -1,6 +1,9 @@
 import { Subject } from 'rxjs';
 import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
 import { OCPI } from './services/ocpi';
+import IConfig from './interfaces/iConfig';
+
+const config: IConfig = require('../config/config.json');
 
 export default class Bridge implements IBridge {
 
@@ -13,7 +16,7 @@ export default class Bridge implements IBridge {
     public cdr$ = this.cdr.asObservable();
 
     constructor() {
-        this.ocpi = OCPI.getInstance();
+        this.ocpi = OCPI.getInstance(config);
     }
 
     public get name(): string {

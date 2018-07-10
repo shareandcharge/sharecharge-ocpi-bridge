@@ -17,7 +17,6 @@ export default class Configurer {
     constructor() {
         this.config = config;
         this.configPath = join(__dirname, '../../config/config.json');
-        console.log(this.configPath);
     }
 
     public writeCredentials(answers: Answers): ICredentials {
@@ -31,7 +30,30 @@ export default class Configurer {
             }
         };
         this.config.msp.credentials = credentials;
+        this.writeEndpoints(answers.url); 
         return this.config.msp.credentials;
+    }
+
+    public writeEndpoints(url: string): void {
+        this.config.msp.versions.map(version => {
+            version.url = join(url, `/ocpi/emsp/${version.version}/`)
+        });
+        this.config.msp.modules.endpoints.map(endpoint => {
+            endpoint.url = join(url, `/ocpi/emsp/${config.version}/${endpoint.identifier}`);
+        });
+    }
+
+
+    public writeCPO(answers: Answers): { versions: string, headers: { Authorization: string } } {
+        const cpo = {
+            versions: answers.url,
+            headers: {
+                Authorization: `Token ${answers.token}`
+            },
+            modules: ''
+        };
+        this.config.cpo = cpo;
+        return cpo;
     }
 
     public save(): void {

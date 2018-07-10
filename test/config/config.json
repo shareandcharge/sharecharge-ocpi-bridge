@@ -1,0 +1,40 @@
+{
+    "version": "2.1.1",
+    "cpo": {
+      "versions": "http://localhost:3000/ocpi/cpo/versions",
+      "headers": {
+        "Authorization": "Token d8d19dea-6679-4154-8981-dc8f8891095f"
+      },
+      "modules": "http://localhost:3000/ocpi/cpo/2.1.1/"
+    },
+    "msp": {
+      "credentials": {
+        "url": "http://localhost:3001/ocpi/emsp/versions/",
+        "token": "52ce2786-6f77-4f6b-9f72-2cfab5ddff33",
+        "party_id": "sc",
+        "country_code": "de",
+        "business_details": {
+          "name": "Share&Charge"
+        }
+      },
+      "versions": [
+        {
+          "version": "2.1.1",
+          "url": "http:/localhost:3001/ocpi/emsp/2.1.1/"
+        }
+      ],
+      "modules": {
+        "version": "2.1.1",
+        "endpoints": [
+          {
+            "identifier": "credentials",
+            "url": "http:/localhost:3001/ocpi/emsp/2.1.1/credentials"
+          },
+          {
+            "identifier": "locations",
+            "url": "http:/localhost:3001/ocpi/emsp/2.1.1/locations"
+          }
+        ]
+      }
+    }
+  }
