@@ -2,7 +2,10 @@ import 'mocha';
 import { expect } from 'chai';
 import * as request from 'request-promise-native';
 import { OCPI } from '../src/services/ocpi';
+import IConfig from '../src/interfaces/iConfig';
 import { Simulator } from './simulation/simulator';
+
+const config: IConfig = require('../config/config');
 
 describe('OCPI', () => {
 
@@ -20,45 +23,65 @@ describe('OCPI', () => {
     });
 
     context('#versions', () => {
-        // CLIENT
-        it('should return array of mutual versions from CPO side', async () => {
-            simulator.versions.success();
-            const result = await ocpi.versions.get();
-            expect(result.length).to.equal(2);
-            expect(result[0].url).to.equal('https://example.com/ocpi/cpo/2.1.1/');
-        });
-        it('should parse CPO versions to find mutual url', async () => {
-            simulator.versions.success();
-            const result = await ocpi.versions.get();
-            expect(ocpi.versions.findUrl(result)).to.equal('https://example.com/ocpi/cpo/2.1.1/');
-        });
-        it('should throw if OCPI status code is not 1000', async () => {
-            simulator.versions.ocpiError();
-            try {
-                await ocpi.versions.get();
-                expect.fail();
-            } catch (err) {
-                expect(err.message).to.equal('GET versions: 2000 - Generic client error');
-            }
-        });
-        it('should throw if HTTP response not 2xx', async () => {
-            simulator.versions.httpError();
-            try {
-                await ocpi.versions.get();
-                expect.fail();
-            } catch (err) {
-                expect(err.message).to.equal('GET versions: 400 - "Bad Request"');
-            }
+        // TEST CLIENT AGAINST CPO
+        context('CPO', () => {
+            it('should return array of mutual versions from CPO side', async () => {
+                simulator.versions.success();
+                const result = await ocpi.versions.get();
+                expect(result.length).to.equal(2);
+                expect(result[0].url).to.equal('https://example.com/ocpi/cpo/2.1.1/');
+            });
+            it('should parse CPO versions to find mutual url', async () => {
+                simulator.versions.success();
+                const result = await ocpi.versions.get();
+                expect(ocpi.versions.findUrl(result)).to.equal('https://example.com/ocpi/cpo/2.1.1/');
+            });
+            it('should throw if OCPI status code is not 1000', async () => {
+                simulator.versions.ocpiError();
+                try {
+                    await ocpi.versions.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET versions: 2000 - Generic client error');
+                }
+            });
+            it('should throw if HTTP response not 2xx', async () => {
+                simulator.versions.httpError();
+                try {
+                    await ocpi.versions.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET versions: 400 - "Bad Request"');
+                }
+            });
         });
         // SERVER
-        it.only('should return array of versions available on eMSP side', async () => {
-            const result = await request({
-                method: 'GET',
-                uri: 'http://127.0.0.1:3001/ocpi/emsp/versions',
-                json: true
+        context.only('eMSP', () => {
+            it('should return array of versions available on eMSP side', async () => {
+                const result = await request({
+                    method: 'GET',
+                    uri: 'http://127.0.0.1:3001/ocpi/emsp/versions',
+                    headers: {
+                        Authorization: `Token ${config.msp.credentials.token}`
+                    },
+                    json: true
+                });
+                expect(result.length).to.equal(1);
+                expect(result[0].version).to.equal('2.1.1');
             });
-            expect(result.length).to.equal(1);
-            expect(result[0].version).to.equal('2.1.1');
+            it('should return 401 if Authorization header incorrect', async () => {
+                try {
+                    await request({
+                        method: 'GET',
+                        uri: 'http://127.0.0.1:3001/ocpi/emsp/versions',
+                        headers: {
+                            Authorization: 'Token 123-456'
+                        }
+                    });
+                } catch (err) {
+                    expect(err.message).to.equal('401 - "Unauthorized"');
+                }
+            });
         });
     });
 

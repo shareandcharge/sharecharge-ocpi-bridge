@@ -1,5 +1,6 @@
-import * as express from 'express';
+import { Router, Request, Response } from 'express';
 import { send } from '../../services/send';
+import authenticate from '../../middleware/authenticate';
 import IVersions from './interfaces/IVersions';
 import IConfig from '../../interfaces/iConfig';
 
@@ -7,10 +8,10 @@ const config: IConfig = require('../../../config/config.json');
 
 export class Versions {
 
-    router: express.Router;
+    router: Router;
 
     constructor() {
-        this.router = express.Router();
+        this.router = Router();
     }
 
     public findUrl(versions: IVersions[]): string {
@@ -33,11 +34,11 @@ export class Versions {
         }
     }
 
-    public serve(): express.Router {
-        this.router.get('/versions', async (req, res) => {
+    public serve(): Router {
+        this.router.get('/versions', authenticate, async (req: Request, res: Response) => {
             res.send(config.msp.versions);
         });
         return this.router;
-    } 
+    }
 
 }
