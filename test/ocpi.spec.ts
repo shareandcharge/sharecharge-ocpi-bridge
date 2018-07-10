@@ -23,7 +23,7 @@ describe('OCPI', () => {
     });
 
     context('#versions', () => {
-        // TEST CLIENT AGAINST CPO
+        // CLIENT
         context('CPO', () => {
             it('should return array of mutual versions from CPO side', async () => {
                 simulator.versions.success();
@@ -56,7 +56,7 @@ describe('OCPI', () => {
             });
         });
         // SERVER
-        context.only('eMSP', () => {
+        context('eMSP', () => {
             it('should return array of versions available on eMSP side', async () => {
                 const result = await request({
                     method: 'GET',
@@ -66,8 +66,8 @@ describe('OCPI', () => {
                     },
                     json: true
                 });
-                expect(result.length).to.equal(1);
-                expect(result[0].version).to.equal('2.1.1');
+                expect(result.length).to.equal(config.msp.versions.length);
+                expect(result[0].version).to.equal(config.msp.versions[0].version);
             });
             it('should return 401 if Authorization header incorrect', async () => {
                 try {
@@ -78,6 +78,7 @@ describe('OCPI', () => {
                             Authorization: 'Token 123-456'
                         }
                     });
+                    expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('401 - "Unauthorized"');
                 }
@@ -86,30 +87,67 @@ describe('OCPI', () => {
     });
 
     context('#modules', () => {
-        it('should return object of modules for given version', async () => {
-            simulator.modules.success();
-            const result = await ocpi.modules.get();
-            const modules = ocpi.modules.createModuleObject(result);
-            expect(Object.keys(modules).length).to.equal(2);
-            expect(modules.credentials).to.equal('https://example.com/ocpi/cpo/2.0/credentials/');
+        // CLIENT
+        context('CPO', () => {
+            it('should return CPO modules for given version', async () => {
+                simulator.modules.success();
+                const result = await ocpi.modules.get();
+                expect(result.version).to.equal('2.1.1');
+                expect(result.endpoints[0].url).to.equal('https://example.com/ocpi/cpo/2.1.1/credentials');
+            });
+            it('should return module endpoints object', async () => {
+                simulator.modules.success();
+                const result = await ocpi.modules.get();
+                const modules = ocpi.modules.createModuleObject(result);
+                expect(modules.credentials).to.equal('https://example.com/ocpi/cpo/2.1.1/credentials');
+            });
+            it('should throw if OCPI response not 1000', async () => {
+                simulator.modules.ocpiError();
+                try {
+                    await ocpi.modules.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET modules: 2000 - Generic client error');
+                }
+            });
+            it('should throw if HTTP response not 2xx', async () => {
+                simulator.modules.httpError();
+                try {
+                    await ocpi.modules.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET modules: 500 - "Internal server error"');
+                }
+            });
         });
-        it('should throw if OCPI response not 1000', async () => {
-            simulator.modules.ocpiError();
-            try {
-                await ocpi.modules.get();
-                expect.fail();
-            } catch (err) {
-                expect(err.message).to.equal('GET modules: 2000 - Generic client error');
-            }
-        });
-        it('should throw if HTTP response not 2xx', async () => {
-            simulator.modules.httpError();
-            try {
-                await ocpi.modules.get();
-                expect.fail();
-            } catch (err) {
-                expect(err.message).to.equal('GET modules: 500 - "Internal server error"');
-            }
+        context('eMSP', () => {
+            it('should return eMSP modules for given version', async () => {
+                const result = await request({
+                    method: 'GET',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/',
+                    headers: {
+                        Authorization: `Token ${config.msp.credentials.token}`
+                    },
+                    json: true
+                });
+                expect(result.version).to.equal(config.msp.modules.version);
+                expect(result.endpoints.length).to.equal(config.msp.modules.endpoints.length);
+                expect(result.endpoints[0].url).to.equal(config.msp.modules.endpoints[0].url);
+            });
+            it('should return 401 if not authorized', async () => {
+                try {
+                    await request({
+                        method: 'GET',
+                        uri: 'http://localhost:3001/ocpi/emsp/2.1.1/',
+                        headers: {
+                            Authorization: 'Token 123'
+                        }
+                    });
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('401 - "Unauthorized"');
+                }
+            });
         });
     });
 

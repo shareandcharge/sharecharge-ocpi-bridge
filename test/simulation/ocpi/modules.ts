@@ -17,15 +17,15 @@ export class Modules {
     public success(): void {
         this.host.get(this.endpoint)
             .reply(200, ocpiSuccess({
-                "version": "2.0",
+                "version": "2.1.1",
                 "endpoints": [
                     {
                         "identifier": "credentials",
-                        "url": "https://example.com/ocpi/cpo/2.0/credentials/"
+                        "url": "https://example.com/ocpi/cpo/2.1.1/credentials"
                     },
                     {
                         "identifier": "locations",
-                        "url": "https://example.com/ocpi/cpo/2.0/locations/"
+                        "url": "https://example.com/ocpi/cpo/2.1.1/locations"
                     }
                 ]
             }));

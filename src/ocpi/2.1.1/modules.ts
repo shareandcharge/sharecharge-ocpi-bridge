@@ -1,3 +1,5 @@
+import { Router, Request, Response } from 'express';
+import authenticate from '../../middleware/authenticate';
 import { send } from '../../services/send';
 import IModules from './interfaces/iModules';
 import IConfig from '../../interfaces/iConfig';
@@ -6,7 +8,10 @@ const config: IConfig = require('../../../config/config.json');
 
 export class Modules {
 
+    router: Router;
+
     constructor() {
+        this.router = Router();
     }
 
     public createModuleObject(data: IModules): { [key: string]: string } {
@@ -15,7 +20,6 @@ export class Modules {
             result[module.identifier] = module.url;
         }
         return result;
-
     }
 
     public async get(): Promise<IModules> {
@@ -30,5 +34,12 @@ export class Modules {
         } catch (err) {
             throw Error('GET modules: ' + err.message);
         }
+    }
+
+    public serve(): Router {
+        this.router.get('/', authenticate, async (req: Request, res: Response) => {
+            res.send(config.msp.modules);
+        });
+        return this.router;
     }
 }

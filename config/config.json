@@ -23,7 +23,7 @@
       }
     ],
     "modules": {
-      "version": "2.1.1.",
+      "version": "2.1.1",
       "endpoints": [
         {
           "identifier": "credentials",

@@ -3,6 +3,9 @@ import { app, port } from './server';
 import { Versions } from '../ocpi/2.1.1/versions';
 import { Modules } from '../ocpi/2.1.1/modules';
 import { Credentials } from '../ocpi/2.1.1/credentials';
+import IConfig from '../interfaces/iConfig';
+
+const config: IConfig = require('../../config/config.json');
 
 export class OCPI {
 
@@ -12,10 +15,12 @@ export class OCPI {
                 public modules: Modules,
                 public credentials: Credentials) {
                     this.createRoutes();
+
     }
 
     private createRoutes(): void {
         app.use('/ocpi/emsp/', this.versions.serve());
+        app.use(`/ocpi/emsp/${config.version}/`, this.modules.serve());
     }
     
     public startServer(callback = () => {}): void {
