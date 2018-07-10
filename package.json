@@ -9,6 +9,9 @@
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts"
   },
+  "bin": {
+    "sc-ocpi": "dist/cli/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/motionwerkGmbH/sharecharge-ocpi-bridge.git"

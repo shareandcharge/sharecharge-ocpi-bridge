@@ -1,6 +1,8 @@
 import * as nock from 'nock';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
-import { config } from '../../../config/config';
+import IConfig from '../../../src/interfaces/iConfig';
+
+const config: IConfig = require('../../../config/config.json');
 
 export class Credentials {
 
@@ -9,7 +11,7 @@ export class Credentials {
 
     constructor() {
         this.endpoint = '/credentials';
-        this.host = nock(config.host + config.version);
+        this.host = nock(config.cpo.host + config.version);
     }
 
     public getSuccess(): void {
@@ -34,6 +36,14 @@ export class Credentials {
             }));
     }
 
+    public getOcpiError(): void {
+        this.host.get(this.endpoint).reply(200, ocpiError());
+    }
+
+    public getHttpError(): void {
+        this.host.get(this.endpoint).reply(400, 'Bad request');
+    }
+
     public postSuccess(): void {
         this.host.post(this.endpoint)
             .reply(200, ocpiSuccess({
@@ -54,6 +64,14 @@ export class Credentials {
                     "website": "http://example.com"
                 }
             }))
+    }
+
+    public postOcpiError(): void {
+        this.host.post(this.endpoint).reply(200, ocpiError());
+    }
+
+    public postHttpError(): void {
+        this.host.post(this.endpoint).reply(500, 'Internal server error');
     }
 
 

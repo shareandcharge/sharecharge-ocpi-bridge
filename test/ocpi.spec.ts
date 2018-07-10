@@ -1,7 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
 import { OCPI } from '../src/services/ocpi';
-import { generateUUID } from '../src/helpers/toolKit';
 import { Simulator } from './simulation/simulator';
 
 describe('OCPI', () => {
@@ -74,10 +73,46 @@ describe('OCPI', () => {
             const result = await ocpi.credentials.get();
             expect(result.token).to.equal('ebf3b399-779f-4497-9b9d-ac6ad3cc44d2');
         });
+        it('should throw if GET OCPI response not 1000', async () => {
+            simulator.credentials.getOcpiError();
+            try {
+                await ocpi.credentials.get();
+                expect.fail();
+            } catch (err) {
+                expect(err.message).to.equal('GET credentials: 2000 - Generic client error');
+            }
+        });
+        it('should throw if GET HTTP response not 200', async () => {
+            simulator.credentials.getHttpError();
+            try {
+                await ocpi.credentials.get();
+                expect.fail();
+            } catch (err) {
+                expect(err.message).to.equal('GET credentials: 400 - "Bad request"');
+            }
+        });
         it('should return TOKEN_C on POST /credentials (registration)', async () => {
             simulator.credentials.postSuccess();
             const result = await ocpi.credentials.post();
             expect(result.token).to.equal('e345383a-ba4c-4514-bc99-e0152ceea4c5')
+        });
+        it('should throw if POST OCPI response not 1000', async () => {
+            simulator.credentials.postOcpiError();
+            try {
+                await ocpi.credentials.post();
+                expect.fail();
+            } catch (err) {
+                expect(err.message).to.equal('POST credentials: 2000 - Generic client error');
+            }
+        });
+        it('should throw if POST HTTP response not 200', async () => {
+            simulator.credentials.postHttpError();
+            try {
+                await ocpi.credentials.post();
+                expect.fail();
+            } catch (err) {
+                expect(err.message).to.equal('POST credentials: 500 - "Internal server error"');
+            }
         });
     });
 

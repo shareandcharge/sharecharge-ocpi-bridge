@@ -1,7 +1,8 @@
 import { send } from '../../services/send';
-import { config } from '../../../config/config';
 import ICredentials from './interfaces/iCredentials';
-import { generateUUID } from '../../helpers/toolKit';
+import IConfig from '../../interfaces/iConfig';
+
+const config: IConfig = require('../../../config/config.json');
 
 export class Credentials {
 
@@ -12,8 +13,8 @@ export class Credentials {
      * @returns TOKEN_C
      */
     public async get(): Promise<ICredentials> {
-        const uri = config.host + config.version + '/credentials';
         try {
+            const uri = config.cpo.host + config.version + '/credentials';
             const result = await send('GET', uri);
             if (result.status_code === 1000) {
                 return result.data;
@@ -31,10 +32,9 @@ export class Credentials {
      * @returns TOKEN_C
      */
     public async post(): Promise<ICredentials> {
-        const uri = config.host + config.version + '/credentials';
-        config.credentials.token = generateUUID();
         try {
-            const result = await send('POST', uri, config.credentials);
+            const uri = config.cpo.host + config.version + '/credentials';
+            const result = await send('POST', uri, config.msp.credentials);
             if (result.status_code === 1000) {
                 return result.data;
             } else {

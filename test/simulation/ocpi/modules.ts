@@ -1,6 +1,8 @@
 import * as nock from 'nock';
-import { config } from '../../../config/config';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
+import IConfig from '../../../src/interfaces/iConfig';
+
+const config: IConfig = require('../../../config/config.json');
 
 export class Modules {
 
@@ -9,7 +11,7 @@ export class Modules {
 
     constructor() {
         this.endpoint = '/';
-        this.host = nock(config.host + config.version);
+        this.host = nock(config.cpo.host + config.version);
     }
 
     public success(): void {
@@ -30,12 +32,10 @@ export class Modules {
     }
 
     public ocpiError(): void {
-        this.host.get(this.endpoint)
-            .reply(200, ocpiError());
+        this.host.get(this.endpoint).reply(200, ocpiError());
     }
 
     public httpError(): void {
-        this.host.get(this.endpoint)
-            .reply(500, 'Internal server error');
+        this.host.get(this.endpoint).reply(500, 'Internal server error');
     }
 }

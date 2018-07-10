@@ -1,6 +1,8 @@
 import { send } from '../../services/send';
 import IModules from './interfaces/iModules';
-import { config } from '../../../config/config';
+import IConfig from '../../interfaces/iConfig';
+
+const config: IConfig = require('../../../config/config.json');
 
 export class Modules {
 
@@ -18,7 +20,7 @@ export class Modules {
 
     public async get(): Promise<IModules> {
         try {
-            const uri = config.host + config.version + '/';
+            const uri = config.cpo.host + config.version + '/';
             const result = await send('GET', uri);
             if (result.status_code === 1000) {
                 return result.data;

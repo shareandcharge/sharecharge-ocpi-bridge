@@ -1,0 +1,35 @@
+{
+  "version": "2.1.1",
+  "cpo": {
+    "host": "http://localhost:3000/ocpi/cpo/",
+    "headers": {
+      "Authorization": "Token b0c1c7af-8b66-4f36-9f2d-11591fb65072"
+    }
+  }, 
+  "msp": {
+    "credentials": {
+      "url": "http://localhost:3001/ocpi/emsp/versions/",
+      "token": "b0c1c7af-8b66-4f36-9f2d-11591fb65072",
+      "party_id": "SNC",
+      "country_code": "DE",
+      "business_details": {
+        "name": "Share & Charge"
+      }
+    },
+    "versions": [
+      {
+        "version": "2.1.1",
+        "url": "http://localhost:3001/ocpi/emsp/2.1.1/"
+      }
+    ],
+    "modules": {
+      "version": "2.1.1.",
+      "endpoints": [
+        {
+          "identifier": "credentials",
+          "url": "http://localhost:3001/ocpi/emsp/2.1.1/credentials"
+        }
+      ]
+    }
+  }
+}

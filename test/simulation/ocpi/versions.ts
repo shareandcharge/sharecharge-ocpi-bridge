@@ -1,6 +1,8 @@
 import * as nock from 'nock';
-import { config } from '../../../config/config';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
+import IConfig from '../../../src/interfaces/iConfig';
+
+const config: IConfig = require('../../../config/config.json');
 
 export class Versions {
 
@@ -9,7 +11,7 @@ export class Versions {
 
     constructor() {
         this.endpoint = '/versions';
-        this.host = nock(config.host);
+        this.host = nock(config.cpo.host);
     }
 
     public success(): void {
