@@ -34,7 +34,7 @@ export class Versions {
     }
 
     public serve(): express.Router {
-        this.router.get('/versions', /* auth middleware, */ async (req, res) => {
+        this.router.get('/versions', async (req, res) => {
             res.send(config.msp.versions);
         });
         return this.router;

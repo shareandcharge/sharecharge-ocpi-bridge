@@ -1,5 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
+import * as request from 'request-promise-native';
 import { OCPI } from '../src/services/ocpi';
 import { Simulator } from './simulation/simulator';
 
@@ -9,12 +10,24 @@ describe('OCPI', () => {
     let simulator: Simulator;
 
     beforeEach(() => {
-        ocpi = OCPI.getInstance()
+        ocpi = OCPI.getInstance();
+        ocpi.startServer();
         simulator = new Simulator();
     });
 
+    afterEach(() => {
+        ocpi.stopServer();
+    });
+
     context('#versions', () => {
-        it('should return url of mutual version', async () => {
+        // CLIENT
+        it('should return array of mutual versions from CPO side', async () => {
+            simulator.versions.success();
+            const result = await ocpi.versions.get();
+            expect(result.length).to.equal(2);
+            expect(result[0].url).to.equal('https://example.com/ocpi/cpo/2.1.1/');
+        });
+        it('should parse CPO versions to find mutual url', async () => {
             simulator.versions.success();
             const result = await ocpi.versions.get();
             expect(ocpi.versions.findUrl(result)).to.equal('https://example.com/ocpi/cpo/2.1.1/');
@@ -36,6 +49,16 @@ describe('OCPI', () => {
             } catch (err) {
                 expect(err.message).to.equal('GET versions: 400 - "Bad Request"');
             }
+        });
+        // SERVER
+        it.only('should return array of versions available on eMSP side', async () => {
+            const result = await request({
+                method: 'GET',
+                uri: 'http://127.0.0.1:3001/ocpi/emsp/versions',
+                json: true
+            });
+            expect(result.length).to.equal(1);
+            expect(result[0].version).to.equal('2.1.1');
         });
     });
 
