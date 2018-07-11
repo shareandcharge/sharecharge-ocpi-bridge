@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import * as request from 'request-promise-native';
 import ICredentials from './interfaces/iCredentials';
-import IConfig from '../../interfaces/iConfig';
+import Config from '../../models/config';
 import authenticate from '../../middleware/authenticate';
 import Helpers from '../../helpers/helpers';
 
@@ -13,7 +13,7 @@ export class Credentials {
     TOKEN_B: string;
     credentials: ICredentials;
 
-    constructor(private config: IConfig) {
+    constructor(private config: Config) {
         this.router = Router();
         this.uri = Helpers.getEndpointByIdentifier(this.config.cpo.endpoints, 'credentials');
         this.TOKEN_B = this.config.msp.credentials.token;

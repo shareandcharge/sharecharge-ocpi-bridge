@@ -2,10 +2,10 @@ import 'mocha';
 import { expect } from 'chai';
 import * as request from 'request-promise-native';
 import { OCPI } from '../src/services/ocpi';
-import IConfig from '../src/interfaces/iConfig';
+import Config from '../src/models/config';
 import { Simulator } from './simulation/simulator';
 
-const config: IConfig = require('./config/config.json');
+const config: Config = require('./config/config.json');
 
 describe('OCPI', () => {
 

@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import * as request from 'request-promise-native';
 import authenticate from '../../middleware/authenticate';
 import IVersions from './interfaces/IVersions';
-import IConfig from '../../interfaces/iConfig';
+import Config from '../../models/config';
 
 export class Versions {
 
@@ -11,7 +11,7 @@ export class Versions {
     uri: string;
     TOKEN_B: string;
 
-    constructor(private config: IConfig) {
+    constructor(private config: Config) {
         this.router = Router();
         this.uri = this.config.cpo.versions;
         this.TOKEN_B = this.config.msp.credentials.token;

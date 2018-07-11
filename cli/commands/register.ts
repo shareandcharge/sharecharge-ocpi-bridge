@@ -1,10 +1,10 @@
 import { Arguments } from "yargs";
-import IConfig from '../../src/interfaces/iConfig';
+import Config from '../../src/models/config';
 import { OCPI } from "../../src/services/ocpi";
 import { Simulator } from '../../test/simulation/simulator';
 import Helpers from "../../src/helpers/helpers";
 
-const config: IConfig = require('../../test/config/config');
+const config: Config = require('../../test/config/config');
 
 export default async (args: Arguments) => {
 

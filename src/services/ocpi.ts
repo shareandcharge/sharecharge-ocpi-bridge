@@ -3,13 +3,13 @@ import { app, port } from './server';
 import { Versions } from '../ocpi/2.1.1/versions';
 import { Modules } from '../ocpi/2.1.1/modules';
 import { Credentials } from '../ocpi/2.1.1/credentials';
-import IConfig from '../interfaces/iConfig';
+import Config from '../models/config';
 
 export class OCPI {
 
     private server: Server;
 
-    constructor(public config: IConfig,
+    constructor(public config: Config,
                 public versions: Versions,
                 public modules: Modules,
                 public credentials: Credentials) {
@@ -34,7 +34,7 @@ export class OCPI {
 
     private static instance: OCPI;
 
-    public static getInstance(config: IConfig): OCPI {
+    public static getInstance(config: Config): OCPI {
         const credentials = new Credentials(config);
         const versions = new Versions(config);
         const modules = new Modules(config);

@@ -2,9 +2,9 @@ import 'mocha';
 import { expect } from 'chai';
 import Bridge from '../src';
 import { ISession } from '@motionwerk/sharecharge-common/dist/common';
-import IConfig from '../src/interfaces/iConfig';
+import Config from '../src/models/config';
 
-const config: IConfig = require('./config/config.json');
+const config: Config = require('./config/config.json');
 
 describe('Bridge Interface', () => {
 

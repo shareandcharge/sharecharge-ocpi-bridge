@@ -1,13 +1,13 @@
 import * as nock from 'nock';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
-import IConfig from '../../../src/interfaces/iConfig';
+import Config from '../../../src/models/config';
 
 export class Credentials {
 
     endpoint: string;
     host: any;
 
-    constructor(config: IConfig) {
+    constructor(config: Config) {
         this.endpoint = '/credentials';
         this.host = nock(config.cpo.modules, {
             reqheaders: config.cpo.headers

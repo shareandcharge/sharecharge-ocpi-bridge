@@ -3,14 +3,14 @@ import { join } from 'path';
 import { resolve } from 'url';
 import Helpers from '../../src/helpers/helpers';
 import { Answers } from 'inquirer';
-import IConfig from '../../src/interfaces/iConfig';
+import Config from '../../src/models/config';
 import ICredentials from '../../src/ocpi/2.1.1/interfaces/iCredentials';
 
-const config: IConfig = require('../../config/config.json');
+const config: Config = require('../../config/config.json');
 
 export default class Configurer {
 
-    config: IConfig;
+    config: Config;
 
     configPath: string;
 

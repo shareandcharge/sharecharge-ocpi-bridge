@@ -1,9 +1,9 @@
 import { Subject } from 'rxjs';
 import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
 import { OCPI } from './services/ocpi';
-import IConfig from './interfaces/iConfig';
+import Config from './models/config';
 
-const prodConfig: IConfig = require('../config/config.json');
+const prodConfig = Config.default();
 
 export default class Bridge implements IBridge {
 

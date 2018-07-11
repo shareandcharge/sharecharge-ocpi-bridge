@@ -1,9 +1,9 @@
 import 'mocha';
 import { expect } from 'chai';
 import Helpers from '../src/helpers/helpers';
-import IConfig from '../src/interfaces/iConfig';
+import Config from '../src/models/config';
 
-const config: IConfig = require('./config/config.json');
+const config: Config = require('./config/config.json');
 
 describe('Helpers', () => {
 

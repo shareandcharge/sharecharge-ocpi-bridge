@@ -69,10 +69,6 @@ jobs:
       - run:
           name: tsc
           command: ./node_modules/.bin/tsc
-      
-      - run:
-          name: copy config.json
-          command: mkdir ./dist/config && cp ./config/config.json ./dist/config/config.json
 
       - persist_to_workspace:
           root: ~/bridge
