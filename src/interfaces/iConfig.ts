@@ -9,6 +9,7 @@ export default interface Config {
             Authorization: string;
         };
         modules: string;
+        endpoints: IModules["endpoints"];
     };
     msp: {
         credentials: {

@@ -9,10 +9,12 @@ export class Versions {
     router: Router;
 
     uri: string;
+    TOKEN_B: string;
 
     constructor(private config: IConfig) {
         this.router = Router();
         this.uri = this.config.cpo.versions;
+        this.TOKEN_B = this.config.msp.credentials.token;
     }
 
     public findUrl(versions: IVersions[]): string {
@@ -40,7 +42,7 @@ export class Versions {
     }
 
     public serve(): Router {
-        this.router.get('/versions', authenticate, async (req: Request, res: Response) => {
+        this.router.get('/versions', authenticate(this.TOKEN_B), async (req: Request, res: Response) => {
             res.send(this.config.msp.versions);
         });
         return this.router;

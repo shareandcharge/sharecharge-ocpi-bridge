@@ -5,7 +5,13 @@
       "headers": {
         "Authorization": "Token d8d19dea-6679-4154-8981-dc8f8891095f"
       },
-      "modules": "http://localhost:3000/ocpi/cpo/2.1.1/"
+      "modules": "http://localhost:3000/ocpi/cpo/2.1.1/",
+      "endpoints": [
+        {
+          "identifier": "credentials",
+          "url": "http://localhost:3000/ocpi/cpo/2.1.1/credentials"
+        }
+      ]
     },
     "msp": {
       "credentials": {

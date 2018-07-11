@@ -49,13 +49,13 @@ export default async () => {
         {
             type: 'confirm',
             name: 'save',
-            message: 'Write to configuration?',
+            message: 'Save configuration?',
         }
     ]);
     if (answers.save) {
         try {
             configurer.save();
-            console.log('Updated configuration');
+            console.log('Saved configuration');
         } catch (err) {
             console.log(`Error updating configuration: ${err.message}`);
             process.exit();       

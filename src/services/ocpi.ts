@@ -14,7 +14,6 @@ export class OCPI {
                 public modules: Modules,
                 public credentials: Credentials) {
                     this.createRoutes();
-
     }
 
     private createRoutes(): void {
@@ -36,11 +35,13 @@ export class OCPI {
     private static instance: OCPI;
 
     public static getInstance(config: IConfig): OCPI {
-        const credentials = new Credentials(config);
-        const versions = new Versions(config);
-        const modules = new Modules(config);
-        OCPI.instance = new OCPI(config, versions, modules, credentials);
-        return OCPI.instance;
+        if (config.cpo.endpoints.length) {
+            const credentials = new Credentials(config);
+            const versions = new Versions(config);
+            const modules = new Modules(config);
+            OCPI.instance = new OCPI(config, versions, modules, credentials);
+            return OCPI.instance;
+        }
     }
 
 }

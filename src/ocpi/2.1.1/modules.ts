@@ -3,16 +3,19 @@ import * as request from 'request-promise-native';
 import authenticate from '../../middleware/authenticate';
 import IModules from './interfaces/iModules';
 import IConfig from '../../interfaces/iConfig';
+import Helpers from '../../helpers/helpers';
 
 export class Modules {
 
     router: Router;
 
     uri: string;
+    TOKEN_B: string;
 
     constructor(private config: IConfig) {
         this.router = Router();
         this.uri = this.config.cpo.modules;
+        this.TOKEN_B = this.config.msp.credentials.token;
     }
     
     public createModuleObject(data: IModules): { [key: string]: string } {
@@ -42,7 +45,7 @@ export class Modules {
     }
 
     public serve(): Router {
-        this.router.get('/', authenticate, async (req: Request, res: Response) => {
+        this.router.get('/', authenticate(this.TOKEN_B), async (req: Request, res: Response) => {
             res.send(this.config.msp.modules);
         });
         return this.router;
