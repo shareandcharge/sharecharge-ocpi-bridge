@@ -31,11 +31,6 @@ describe('OCPI', () => {
                 expect(result.length).to.equal(2);
                 expect(result[0].url).to.equal('https://example.com/ocpi/cpo/2.1.1/');
             });
-            it('should parse CPO versions to find mutual url', async () => {
-                simulator.versions.success();
-                const result = await ocpi.versions.get();
-                expect(ocpi.versions.findUrl(result)).to.equal('https://example.com/ocpi/cpo/2.1.1/');
-            });
             it('should throw if OCPI status code is not 1000', async () => {
                 simulator.versions.ocpiError();
                 try {
@@ -94,12 +89,6 @@ describe('OCPI', () => {
                 const result = await ocpi.modules.get();
                 expect(result.version).to.equal('2.1.1');
                 expect(result.endpoints[0].url).to.equal('https://example.com/ocpi/cpo/2.1.1/credentials');
-            });
-            it('should return module endpoints object', async () => {
-                simulator.modules.success();
-                const result = await ocpi.modules.get();
-                const modules = ocpi.modules.createModuleObject(result);
-                expect(modules.credentials).to.equal('https://example.com/ocpi/cpo/2.1.1/credentials');
             });
             it('should throw if OCPI response not 1000', async () => {
                 simulator.modules.ocpiError();

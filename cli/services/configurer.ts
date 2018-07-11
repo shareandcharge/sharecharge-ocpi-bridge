@@ -1,7 +1,7 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import { resolve } from 'url';
-import { v4 } from 'uuid';
+import Helpers from '../../src/helpers/helpers';
 import { Answers } from 'inquirer';
 import IConfig from '../../src/interfaces/iConfig';
 import ICredentials from '../../src/ocpi/2.1.1/interfaces/iCredentials';
@@ -22,7 +22,7 @@ export default class Configurer {
     public writeCredentials(answers: Answers): ICredentials {
         const credentials = {
             url: resolve(answers.url, '/ocpi/emsp/versions/'),
-            token: v4(),
+            token: Helpers.generateUUID(),
             party_id: answers.party_id,
             country_code: answers.country_code,
             business_details: {
@@ -43,14 +43,14 @@ export default class Configurer {
         });
     }
 
-
     public writeCPO(answers: Answers): { versions: string, headers: { Authorization: string } } {
         const cpo = {
             versions: answers.url,
             headers: {
                 Authorization: `Token ${answers.token}`
             },
-            modules: ''
+            modules: '',
+            endpoints: []
         };
         this.config.cpo = cpo;
         return cpo;

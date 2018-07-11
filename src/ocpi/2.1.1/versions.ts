@@ -17,12 +17,6 @@ export class Versions {
         this.TOKEN_B = this.config.msp.credentials.token;
     }
 
-    public findUrl(versions: IVersions[]): string {
-        // select IVersion object that matches config version
-        const version = versions.filter(v => v.version === this.config.version);
-        return version[0].url;
-    }
-
     public async get(): Promise<IVersions[]> {
         try {
             const result = await request({

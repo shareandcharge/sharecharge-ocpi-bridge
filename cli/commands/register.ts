@@ -1,7 +1,7 @@
 import { Arguments } from "yargs";
 import IConfig from '../../src/interfaces/iConfig';
+import { OCPI } from "../../src/services/ocpi";
 
-// inject this!
 const config: IConfig = require('../../test/config/config');
 
 // register script
@@ -19,9 +19,15 @@ const config: IConfig = require('../../test/config/config');
 
 export default (args: Arguments) => {
 
-    
+    const ocpi = OCPI.getInstance(config);
+    try {
+        const versions = await ocpi.versions.get();
+                
+        console.log(`Got versions from ${config.cpo.versions}`);
+    }
 
-    console.log(`Requesting versions from ${config.cpo.versions}`);
-    // call simulator
+
+
+    console.log();
 
 }

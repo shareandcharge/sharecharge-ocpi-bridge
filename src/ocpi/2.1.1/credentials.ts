@@ -15,7 +15,7 @@ export class Credentials {
 
     constructor(private config: IConfig) {
         this.router = Router();
-        this.uri = Helpers.getEndpoint(this.config.cpo.endpoints, 'credentials');
+        this.uri = Helpers.getEndpointByIdentifier(this.config.cpo.endpoints, 'credentials');
         this.TOKEN_B = this.config.msp.credentials.token;
         this.credentials = this.config.msp.credentials;
     }

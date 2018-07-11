@@ -18,14 +18,6 @@ export class Modules {
         this.TOKEN_B = this.config.msp.credentials.token;
     }
     
-    public createModuleObject(data: IModules): { [key: string]: string } {
-        const result = {};
-        for (const module of data.endpoints) {
-            result[module.identifier] = module.url;
-        }
-        return result;
-    }
-    
     public async get(): Promise<IModules> {
         try {
             const result = await request({
