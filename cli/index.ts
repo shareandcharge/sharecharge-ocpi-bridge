@@ -14,7 +14,7 @@ const argv = yargs
     .alias('v', 'version')
     .alias('h', 'help')
     .command('init', 'Initialise configuration', {}, init)
-    .command('config', 'Get and set configuration values', {}, config)
+    .command('config', 'Get and set configuration values', config, () => argv.showHelp())
     .command('register', 'Register on Charge Point Operator (CPO) server', {}, register)
     .command('locations', 'Use the location module', {}, locations)
     .demandCommand(1)
