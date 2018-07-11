@@ -38,6 +38,7 @@ export class Modules {
 
     public serve(): Router {
         this.router.get('/', authenticate(this.TOKEN_B), async (req: Request, res: Response) => {
+            console.log('GET modules')
             res.send(this.config.msp.modules);
         });
         return this.router;

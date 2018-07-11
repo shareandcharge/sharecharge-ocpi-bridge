@@ -37,6 +37,7 @@ export class Versions {
 
     public serve(): Router {
         this.router.get('/versions', authenticate(this.TOKEN_B), async (req: Request, res: Response) => {
+            console.log('GET versions')
             res.send(this.config.msp.versions);
         });
         return this.router;

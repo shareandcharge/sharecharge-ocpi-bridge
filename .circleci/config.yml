@@ -1,0 +1,130 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+
+defaults: 
+  - &stage_defaults
+    working_directory: ~/bridge
+
+  - &docker_defaults
+    image: circleci/node
+
+  - &npm_auth
+    run:
+      name: npm secret
+      command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+
+  
+jobs:
+
+  build:
+
+    <<: *stage_defaults
+
+    docker:
+      - <<: *docker_defaults
+
+    steps:
+
+      - checkout
+
+      - <<: *npm_auth
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Install Node Modules
+          command:
+            npm install
+
+      # update cache if needed
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+      - persist_to_workspace:
+          root: ~/bridge
+          paths: .
+
+  transpile:
+    
+    <<: *stage_defaults
+
+    docker:
+      - <<: *docker_defaults
+
+    steps:
+
+      - attach_workspace:
+          at: ~/bridge
+
+      - run:
+          name: tsc
+          command: ./node_modules/.bin/tsc
+      
+      - run:
+          name: copy config.json
+          command: mkdir ./dist/config && cp ./config/config.json ./dist/config/config.json
+
+      - persist_to_workspace:
+          root: ~/bridge
+          paths: .
+
+  test:
+
+    <<: *stage_defaults
+
+    docker:
+      - <<: *docker_defaults
+
+    steps:
+
+      - attach_workspace:
+          at: ~/bridge
+
+      - run:
+          name: npm test
+          command: npm test
+        
+  deploy:
+
+    <<: *stage_defaults
+
+    docker:
+      - <<: *docker_defaults
+
+    steps:
+
+      - attach_workspace:
+          at: ~/bridge
+
+      - <<: *npm_auth
+
+      - run:
+          name: npm publish
+          command: npm publish
+
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - build
+      - transpile:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          # type: approval
+          requires:
+            - transpile
+            - test

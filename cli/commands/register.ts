@@ -36,7 +36,7 @@ export default async (args: Arguments) => {
             console.log(`Found module endpoints: ${modules.endpoints.map(endpoint => endpoint.identifier).join(' ')}`);
             // write to config
         } else {
-            throw Error(`Unable to find module endpoints from ${config.cpo.modules}`);
+            throw Error(`Unable to find module endpoints from ${config.cpo.modules}!`);
         }
 
         // 3. Request POST credentials with generated TOKEN_B

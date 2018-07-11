@@ -68,6 +68,7 @@ export class Credentials {
 
     public serve(): Router {
         this.router.get('/credentials', authenticate(this.TOKEN_B), async (req: Request, res: Response) => {
+            console.log('GET credentials');
             res.send(this.credentials);
         });
         return this.router;
