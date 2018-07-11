@@ -2,6 +2,9 @@ import 'mocha';
 import { expect } from 'chai';
 import Bridge from '../src';
 import { ISession } from '@motionwerk/sharecharge-common/dist/common';
+import IConfig from '../src/interfaces/iConfig';
+
+const config: IConfig = require('./config/config.json');
 
 describe('Bridge Interface', () => {
 
@@ -9,7 +12,7 @@ describe('Bridge Interface', () => {
     let session: ISession;
 
     beforeEach(() => {
-        bridge = new Bridge();
+        bridge = new Bridge(config);
         session = {
             scId: '0x01',
             evseId: 'de-123',

@@ -12,13 +12,4 @@ describe('Helpers', () => {
        expect(endpoint).to.equal('http://localhost:3000/ocpi/cpo/2.1.1/credentials'); 
     });
 
-    it('should throw if unable to find endpoint', () => {
-        try {
-            Helpers.getEndpoint(config.cpo.endpoints, 'lcations');
-            expect.fail();
-        } catch (err) {
-            expect(err.message).to.equal('No endpoint found for lcations module!');
-        }
-    });
-
 });

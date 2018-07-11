@@ -1,4 +1,8 @@
 import { Arguments } from "yargs";
+import IConfig from '../../src/interfaces/iConfig';
+
+// inject this!
+const config: IConfig = require('../../test/config/config');
 
 // register script
 
@@ -14,5 +18,10 @@ import { Arguments } from "yargs";
 */
 
 export default (args: Arguments) => {
+
     
+
+    console.log(`Requesting versions from ${config.cpo.versions}`);
+    // call simulator
+
 }

@@ -3,7 +3,7 @@ import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/s
 import { OCPI } from './services/ocpi';
 import IConfig from './interfaces/iConfig';
 
-const config: IConfig = require('../config/config.json');
+const prodConfig: IConfig = require('../config/config.json');
 
 export default class Bridge implements IBridge {
 
@@ -15,7 +15,9 @@ export default class Bridge implements IBridge {
     private cdr = new Subject<ICDR>();
     public cdr$ = this.cdr.asObservable();
 
-    constructor() {
+    // express middleware seems to use single scope (whichever is initiated first)
+    // therefore config needs to be the same across all tests
+    constructor(config = prodConfig) {
         this.ocpi = OCPI.getInstance(config);
     }
 

@@ -9,11 +9,7 @@ export default class Helpers {
 
     static getEndpoint(modules: IModules['endpoints'], identifier: string): string {
         const endpoint = modules.filter(mod => mod.identifier === identifier).map(mod => mod.url);
-        if (endpoint[0]) {
-            return endpoint[0];
-        } else {
-            throw Error(`No endpoint found for ${identifier} module!`);
-        }
+        return endpoint[0];
     }
 
 }
