@@ -14,7 +14,8 @@ export default class ConfigService {
     }
 
     static set(argv: Arguments): void {
-
+        config.set(argv.key, argv.value);
+        console.log('configuration updated');
     }
 
 }

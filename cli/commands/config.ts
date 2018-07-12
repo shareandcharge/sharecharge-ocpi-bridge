@@ -15,5 +15,18 @@ export default (yargs: Argv) => yargs
         }),
         ConfigService.get
     )
-    .command('set', 'Set configuration values', {}, ConfigService.set)
+    .command('set <key> <value>', 'Set configuration values',
+        (yargs: Argv) => {
+            return yargs
+                .positional('key', {
+                    describe: 'The configuration key to set (dot-notation can be used to access nested keys)',
+                    type: 'string',
+                })
+                .positional('value', {
+                    describe: 'The value to set the key to',
+                })
+                .demandOption(['key', 'value'])
+
+        }, 
+        ConfigService.set)
 
