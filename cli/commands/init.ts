@@ -1,8 +1,11 @@
 import { Answers, prompt } from 'inquirer';
-import * as configStore from 'configstore';
+import * as ConfigStore from 'configstore';
 import { resolve as resolveUrl } from 'url';
 import Helpers from '../../src/helpers/helpers';
 import Config from '../../src/models/config';
+import IVersions from '../../src/ocpi/2.1.1/interfaces/IVersions';
+import IModules from '../../src/ocpi/2.1.1/interfaces/iModules';
+import ICredentials from '../../src/ocpi/2.1.1/interfaces/iCredentials';
 
 export default async () => {
     console.log('Initializing Open Charge Point Interface (OCPI) Bridge...');
@@ -29,7 +32,7 @@ export default async () => {
             message: 'Enter your eMSP server address:',
         },
     ]);
-    const mspCredentials = {
+    const mspCredentials: ICredentials = {
         url: resolveUrl(msp.url, '/ocpi/emsp/versions/'),
         token: Helpers.generateUUID(),
         party_id: msp.party_id,
@@ -38,11 +41,11 @@ export default async () => {
             name: msp.name
         }
     };
-    const mspVersions = [{
-        identifier: Config.default.version,
-        endpoints: resolveUrl(mspCredentials.url, `/ocpi/emsp/${Config.default.version}/`)
+    const mspVersions: IVersions[] = [{
+        version: Config.default.version,
+        url: resolveUrl(mspCredentials.url, `/ocpi/emsp/${Config.default.version}/`)
     }];
-    const mspModules = {
+    const mspModules: IModules = {
         version: Config.default.version,
         endpoints: Config.default.msp.modules.endpoints.map(endpoint => {
             return {
@@ -84,7 +87,7 @@ export default async () => {
     ]);
     if (confirm.save) {
         try {
-            const config = new configStore('ocpi', Config.default);
+            const config = new ConfigStore('ocpi', Config.default);
             config.set('msp.credentials', mspCredentials);
             config.set('msp.versions', mspVersions);
             config.set('msp.modules', mspModules);

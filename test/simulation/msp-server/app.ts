@@ -1,7 +1,7 @@
 import { OCPI } from '../../../src/services/ocpi';
-import Config from '../../../src/models/config';
+import * as ConfigStore from 'configstore';
 
-const config: Config = require('../../config/config.json');
-
+const config = new ConfigStore('ocpi');
+const port = process.env.PORT || 3001;
 const ocpi = OCPI.getInstance(config);
-ocpi.startServer(() => console.log('MSP server listening'));
+ocpi.startServer(() => console.log(`MSP server listening on port ${port}`));

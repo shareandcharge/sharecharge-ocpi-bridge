@@ -1,10 +1,9 @@
 import { Subject } from 'rxjs';
-import * as configStore from 'configstore';
+import * as ConfigStore from 'configstore';
 import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
 import { OCPI } from './services/ocpi';
-import Config from './models/config';
 
-const prodConfig: Config = new configStore('ocpi').all;
+const prodConfig: ConfigStore = new ConfigStore('ocpi');
 
 export default class Bridge implements IBridge {
 
@@ -18,7 +17,7 @@ export default class Bridge implements IBridge {
 
     // express middleware seems to use single scope (whichever is initiated first)
     // therefore config needs to be the same across all tests
-    constructor(config: Config = prodConfig) {
+    constructor(config: ConfigStore = prodConfig) {
         this.ocpi = OCPI.getInstance(config);
     }
 

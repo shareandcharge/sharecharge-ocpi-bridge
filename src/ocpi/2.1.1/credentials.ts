@@ -1,23 +1,17 @@
 import { Router, Request, Response } from 'express';
 import * as request from 'request-promise-native';
+import * as ConfigStore from 'configstore';
 import ICredentials from './interfaces/iCredentials';
-import Config from '../../models/config';
 import authenticate from '../../middleware/authenticate';
 import Helpers from '../../helpers/helpers';
+import IResponse from './interfaces/iResponse';
 
 export class Credentials {
 
     router: Router;
     
-    uri: string;
-    TOKEN_B: string;
-    credentials: ICredentials;
-
-    constructor(private config: Config) {
+    constructor(private config: ConfigStore) {
         this.router = Router();
-        this.uri = Helpers.getEndpointByIdentifier(this.config.cpo.endpoints, 'credentials');
-        this.TOKEN_B = this.config.msp.credentials.token;
-        this.credentials = this.config.msp.credentials;
     }
 
     /**
@@ -28,8 +22,8 @@ export class Credentials {
         try {
             const result = await request({
                 method: 'GET',
-                uri: this.uri,
-                headers: this.config.cpo.headers,
+                uri: Helpers.getEndpointByIdentifier(this.config.get('cpo.endpoints'), 'credentials'),
+                headers: this.config.get('cpo.headers'),
                 json: true
             });
             if (result.status_code === 1000) {
@@ -51,9 +45,9 @@ export class Credentials {
         try {
             const result = await request({
                 method: 'POST', 
-                uri: this.uri, 
-                headers: this.config.cpo.headers,
-                body: this.credentials,
+                uri: Helpers.getEndpointByIdentifier(this.config.get('cpo.endpoints'), 'credentials'),
+                headers: this.config.get('cpo.headers'),
+                body: this.config.get('msp.credentials'),
                 json: true
             });
             if (result.status_code === 1000) {
@@ -67,9 +61,13 @@ export class Credentials {
     }
 
     public serve(): Router {
-        this.router.get('/credentials', authenticate(this.TOKEN_B), async (req: Request, res: Response) => {
+        this.router.get('/credentials', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             console.log('GET credentials');
-            res.send(this.credentials);
+            res.send(<IResponse>{
+                status_code: 1000,
+                data: this.config.get('msp.credentials'),
+                timestamp: new Date()
+            });
         });
         return this.router;
     }

@@ -1,4 +1,5 @@
 import { Server } from 'http';
+import * as ConfigStore from 'configstore';
 import { app, port } from './server';
 import { Versions } from '../ocpi/2.1.1/versions';
 import { Modules } from '../ocpi/2.1.1/modules';
@@ -9,7 +10,7 @@ export class OCPI {
 
     private server: Server;
 
-    constructor(public config: Config,
+    constructor(public config: ConfigStore,
                 public versions: Versions,
                 public modules: Modules,
                 public credentials: Credentials) {
@@ -18,7 +19,7 @@ export class OCPI {
 
     private createRoutes(): void {
         app.use('/ocpi/emsp/', this.versions.serve());
-        app.use(`/ocpi/emsp/${this.config.version}/`, 
+        app.use(`/ocpi/emsp/${this.config.all.version}/`, 
             this.modules.serve(),
             this.credentials.serve()
         );
@@ -34,7 +35,7 @@ export class OCPI {
 
     private static instance: OCPI;
 
-    public static getInstance(config: Config): OCPI {
+    public static getInstance(config: ConfigStore): OCPI {
         const credentials = new Credentials(config);
         const versions = new Versions(config);
         const modules = new Modules(config);

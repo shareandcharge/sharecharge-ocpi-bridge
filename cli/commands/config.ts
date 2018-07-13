@@ -1,4 +1,3 @@
-import * as configStore from 'configstore';
 import ConfigService from '../services/config';
 import { Argv } from 'yargs';
 

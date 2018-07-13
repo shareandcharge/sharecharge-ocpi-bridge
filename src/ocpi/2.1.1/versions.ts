@@ -1,28 +1,24 @@
 import { Router, Request, Response } from 'express';
 import * as request from 'request-promise-native';
+import * as ConfigStore from 'configstore';
 import authenticate from '../../middleware/authenticate';
 import IVersions from './interfaces/IVersions';
-import Config from '../../models/config';
+import IResponse from './interfaces/iResponse';
 
 export class Versions {
 
     router: Router;
 
-    uri: string;
-    TOKEN_B: string;
-
-    constructor(private config: Config) {
+    constructor(private config: ConfigStore) {
         this.router = Router();
-        this.uri = this.config.cpo.versions;
-        this.TOKEN_B = this.config.msp.credentials.token;
     }
 
     public async get(): Promise<IVersions[]> {
         try {
             const result = await request({
                 method: 'GET', 
-                uri: this.uri,
-                headers: this.config.cpo.headers,
+                uri: this.config.get('cpo.versions'),
+                headers: this.config.get('cpo.headers'),
                 json: true
             });
             if (result.status_code === 1000) {
@@ -36,9 +32,13 @@ export class Versions {
     }
 
     public serve(): Router {
-        this.router.get('/versions', authenticate(this.TOKEN_B), async (req: Request, res: Response) => {
+        this.router.get('/versions', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             console.log('GET versions')
-            res.send(this.config.msp.versions);
+            res.send(<IResponse>{
+                status_code: 1000,
+                data: this.config.get('msp.versions'),
+                timestamp: new Date()
+            });
         });
         return this.router;
     }

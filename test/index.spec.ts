@@ -1,10 +1,10 @@
 import 'mocha';
 import { expect } from 'chai';
+import * as ConfigStore from 'configstore';
 import Bridge from '../src';
 import { ISession } from '@motionwerk/sharecharge-common/dist/common';
-import Config from '../src/models/config';
 
-const config: Config = require('./config/config.json');
+const config = new ConfigStore('ocpi-test', require('./config/config.json'));
 
 describe('Bridge Interface', () => {
 

@@ -1,14 +1,14 @@
 import * as nock from 'nock';
+import * as ConfigStore from 'configstore';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
-import Config from '../../../../src/models/config';
 
 export class Versions {
 
     host: any;
 
-    constructor(config: Config) {
-        this.host = nock(config.cpo.versions, {
-            reqheaders: config.cpo.headers
+    constructor(config: ConfigStore) {
+        this.host = nock(config.get('cpo.versions'), {
+            reqheaders: config.get('cpo.headers')
         });
     }
 

@@ -1,7 +1,7 @@
+import * as ConfigStore from 'configstore';
 import { Versions } from './ocpi/versions';
 import { Modules } from './ocpi/modules';
 import { Credentials } from './ocpi/credentials';
-import Config from '../../../src/models/config';
 
 export class Simulator {
 
@@ -9,7 +9,7 @@ export class Simulator {
     modules: Modules;
     credentials: Credentials;
 
-    constructor(config: Config) {
+    constructor(config: ConfigStore) {
         this.versions = new Versions(config);
         this.modules = new Modules(config);
         this.credentials = new Credentials(config);

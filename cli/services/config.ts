@@ -1,7 +1,7 @@
 import { Arguments } from "yargs";
-import * as configStore from 'configstore';
+import * as ConfigStore from 'configstore';
 
-const config = new configStore('ocpi');
+const config = new ConfigStore('ocpi');
 
 export default class ConfigService {
 

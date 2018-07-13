@@ -1,22 +1,26 @@
 import { Router, Request, Response } from 'express';
+import * as ConfigStore from 'configstore';
 import authenticate from '../../../../src/middleware/authenticate';
-import Config from '../../../../src/models/config';
-
-const config: Config = require('../../../config/config.json');
-const TOKEN_A = config.cpo.headers.Authorization.split(' ')[1];
+import IResponse from '../../../../src/ocpi/2.1.1/interfaces/iResponse';
 
 const router = Router();
 
-export default (): Router => {
+export default (config: ConfigStore, port: string): Router => {
+    const TOKEN_A = config.get('cpo.headers.Authorization').split(' ')[1];
     router.get('/', authenticate(TOKEN_A), async (req: Request, res: Response) => {
-        res.send({
-            version: '2.1.1',
-            endpoints: [
-                {
-                    identifier: 'credentials',
-                    url: 'http://localhost:3005/ocpi/cpo/2.1.1/credentials'
-                }
-            ]
+        console.log('GET /2.1.1');
+        res.send(<IResponse>{
+            status_code: 1000,
+            data: {
+                version: '2.1.1',
+                endpoints: [
+                    {
+                        identifier: 'credentials',
+                        url: `http://localhost:${port}/ocpi/cpo/${config.get('version')}/credentials`
+                    }
+                ]
+            },
+            timestamp: new Date()
         });
     });
     return router;

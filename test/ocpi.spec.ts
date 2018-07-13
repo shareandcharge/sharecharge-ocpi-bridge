@@ -1,11 +1,11 @@
 import 'mocha';
 import { expect } from 'chai';
 import * as request from 'request-promise-native';
+import * as ConfigStore from 'configstore';
 import { OCPI } from '../src/services/ocpi';
-import Config from '../src/models/config';
 import { Simulator } from './simulation/cpo-responses/simulator';
 
-const config: Config = require('./config/config.json');
+const config = new ConfigStore('ocpi-test', require('./config/config.json'));
 
 describe('OCPI', () => {
 
@@ -57,12 +57,12 @@ describe('OCPI', () => {
                     method: 'GET',
                     uri: 'http://127.0.0.1:3001/ocpi/emsp/versions',
                     headers: {
-                        Authorization: `Token ${config.msp.credentials.token}`
+                        Authorization: `Token ${config.get('msp.credentials.token')}`
                     },
                     json: true
                 });
-                expect(result.length).to.equal(config.msp.versions.length);
-                expect(result[0].version).to.equal(config.msp.versions[0].version);
+                expect(result.data.length).to.equal(config.get('msp.versions').length);
+                expect(result.data[0].version).to.equal(config.get('msp.versions')[0].version);
             });
             it('should return 401 if Authorization header incorrect', async () => {
                 try {
@@ -115,13 +115,13 @@ describe('OCPI', () => {
                     method: 'GET',
                     uri: 'http://localhost:3001/ocpi/emsp/2.1.1/',
                     headers: {
-                        Authorization: `Token ${config.msp.credentials.token}`
+                        Authorization: `Token ${config.get('msp.credentials.token')}`
                     },
                     json: true
                 });
-                expect(result.version).to.equal(config.msp.modules.version);
-                expect(result.endpoints.length).to.equal(config.msp.modules.endpoints.length);
-                expect(result.endpoints[0].url).to.equal(config.msp.modules.endpoints[0].url);
+                expect(result.data.version).to.equal(config.get('msp.modules.version'));
+                expect(result.data.endpoints.length).to.equal(config.get('msp.modules.endpoints').length);
+                expect(result.data.endpoints[0].url).to.equal(config.get('msp.modules.endpoints')[0].url);
             });
             it('should return 401 if not authorized', async () => {
                 try {
@@ -197,11 +197,11 @@ describe('OCPI', () => {
                     method: 'GET',
                     uri: 'http://localhost:3001/ocpi/emsp/2.1.1/credentials',
                     headers: {
-                        Authorization: `Token ${config.msp.credentials.token}`
+                        Authorization: `Token ${config.get('msp.credentials.token')}`
                     },
                     json: true
                 });
-                expect(result.token).to.equal(config.msp.credentials.token);
+                expect(result.data.token).to.equal(config.get('msp.credentials.token'));
             });
             it('should return 401 if not authorized', async () => {
                 try {

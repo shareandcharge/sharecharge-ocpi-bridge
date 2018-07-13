@@ -1,3 +1,4 @@
+import * as ConfigStore from 'configstore';
 import IModules from "../ocpi/2.1.1/interfaces/iModules";
 import IVersions from "../ocpi/2.1.1/interfaces/IVersions";
 

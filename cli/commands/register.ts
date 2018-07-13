@@ -1,21 +1,15 @@
 import { Arguments } from "yargs";
-import * as configStore from 'configstore';
+import * as ConfigStore from 'configstore';
 import Config from '../../src/models/config';
 import { OCPI } from "../../src/services/ocpi";
 // import { Simulator } from '../../test/simulation/cpo-responses/simulator';
 import Helpers from "../../src/helpers/helpers";
 
-// const config: Config = new configStore('ocpi').all;
-
-const config: Config = require('../../test/config/config.json');
-
+const config = new ConfigStore('ocpi');
 
 export default async (args: Arguments) => {
 
-    // use simulator if test flag present
-    // return if not yet initialised
-
-    if (!config.cpo.headers.Authorization && !config.cpo.versions) {
+    if (!config.get('cpo.headers.Authorization') && !config.get('cpo.versions')) {
         console.log('No Charge Point Operator configured!');
         return;
     }
@@ -29,13 +23,14 @@ export default async (args: Arguments) => {
         // 1. Request GET versions (using TOKEN_A as authentication) and store mutual version's modules endpoint
         
         // simulator.versions.success();
+        console.log('Requestion CPO OCPI versions');
         const versions = await ocpi.versions.get();
-        const modulesUrl = Helpers.getUrlByVersion(versions, config.version);
+        const modulesUrl = Helpers.getUrlByVersion(versions, config.get('version'));
         if (modulesUrl) {
-            console.log(`Found matching OCPI version: ${config.version}`);
-            // write to config
+            console.log(`Found matching OCPI version: ${config.get('version')}`);
+            config.set('cpo.modules', modulesUrl);
         } else {
-            throw Error(`Unable to find matching OCPI version from ${config.cpo.versions}!`);
+            throw Error(`Unable to find matching OCPI version from ${config.get('cpo.versions')}!`);
         }
 
         // 2. Request GET modules (using TOKEN_A as authentication) and store all  
@@ -44,9 +39,9 @@ export default async (args: Arguments) => {
         const modules = await ocpi.modules.get();
         if (modules.endpoints.length) {
             console.log(`Found module endpoints: ${modules.endpoints.map(endpoint => endpoint.identifier).join(' ')}`);
-            // write to config
+            config.set('cpo.endpoints', modules.endpoints);
         } else {
-            throw Error(`Unable to find module endpoints from ${config.cpo.modules}!`);
+            throw Error(`Unable to find module endpoints from ${config.get('cpo.modules')}!`);
         }
 
         // 3. Request POST credentials with generated TOKEN_B
@@ -59,13 +54,13 @@ export default async (args: Arguments) => {
 
         if (credentials.token) {
             console.log(`Received TOKEN_C: ${credentials.token}`);
-            // write to config (auth header)
+            config.set('cpo.headers.Authorization', `Token ${credentials.token}`);
         } else {
-            throw Error(`Could not find TOKEN_C from ${ocpi.credentials.uri}`);
+            const url = Helpers.getEndpointByIdentifier(config.get('cpo.endpoints'), 'credentials');
+            throw Error(`Unable to retrieve TOKEN_C from ${url}`);
         }
 
-        console.log('Completed registration');
-
+        console.log('Registration complete');
 
     } catch (err) {
         console.log('Error with registration:', err.message);

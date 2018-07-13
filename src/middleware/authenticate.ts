@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { NextFunction } from 'connect';
 
-export default (TOKEN_B: string) => {
+export default (TOKEN: string) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const header = req.header('Authorization');
         if (!header) {
@@ -9,6 +9,6 @@ export default (TOKEN_B: string) => {
             return;
         }
         const token = header.split(' ')[1];
-        token === TOKEN_B ? next() : res.status(401).send('Unauthorized');
+        token === TOKEN ? next() : res.status(401).send('Unauthorized');
     }
 }

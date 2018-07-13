@@ -1,28 +1,25 @@
 import { Router, Request, Response } from 'express';
 import * as request from 'request-promise-native';
+import * as ConfigStore from 'configstore';
 import authenticate from '../../middleware/authenticate';
 import IModules from './interfaces/iModules';
-import Config from '../../models/config';
+import IResponse from './interfaces/iResponse';
 
 export class Modules {
 
     router: Router;
 
-    uri: string;
-    TOKEN_B: string;
 
-    constructor(private config: Config) {
+    constructor(private config: ConfigStore) {
         this.router = Router();
-        this.uri = this.config.cpo.modules;
-        this.TOKEN_B = this.config.msp.credentials.token;
     }
     
     public async get(): Promise<IModules> {
         try {
             const result = await request({
                 method: 'GET', 
-                uri: this.uri,
-                headers: this.config.cpo.headers,
+                uri: this.config.get('cpo.modules'),
+                headers: this.config.get('cpo.headers'),
                 json: true
             });
             if (result.status_code === 1000) {
@@ -36,9 +33,13 @@ export class Modules {
     }
 
     public serve(): Router {
-        this.router.get('/', authenticate(this.TOKEN_B), async (req: Request, res: Response) => {
+        this.router.get('/', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             console.log('GET modules')
-            res.send(this.config.msp.modules);
+            res.send(<IResponse>{
+                status_code: 1000,
+                data: this.config.get('msp.modules'),
+                timestamp: new Date()
+            });
         });
         return this.router;
     }
