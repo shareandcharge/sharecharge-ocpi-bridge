@@ -1,15 +1,23 @@
 import { Arguments } from "yargs";
+import * as configStore from 'configstore';
 import Config from '../../src/models/config';
 import { OCPI } from "../../src/services/ocpi";
-import { Simulator } from '../../test/simulation/simulator';
+import { Simulator } from '../../test/simulation/cpo-responses/simulator';
 import Helpers from "../../src/helpers/helpers";
 
-const config: Config = require('../../test/config/config');
+// const config: Config = new configStore('ocpi').all;
+
+const config: Config = require('../../test/config/config.json');
+
 
 export default async (args: Arguments) => {
 
     // use simulator if test flag present
     // return if not yet initialised
+
+    if (!config.cpo.headers.Authorization) {
+        console.log('OCPI bridge not yet initialized!')
+    }
 
     const ocpi = OCPI.getInstance(config);
     ocpi.startServer();
@@ -18,6 +26,7 @@ export default async (args: Arguments) => {
     try {
 
         // 1. Request GET versions (using TOKEN_A as authentication) and store mutual version's modules endpoint
+        
         simulator.versions.success();
         const versions = await ocpi.versions.get();
         const modulesUrl = Helpers.getUrlByVersion(versions, config.version);

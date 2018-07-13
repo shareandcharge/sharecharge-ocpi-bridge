@@ -7,11 +7,11 @@ import { Argv } from 'yargs';
 export default (yargs: Argv) => yargs
     .usage("Usage: sc-ocpi config <command> [options]")
     .demandCommand(1)
-    .command('get <key>', 
+    .command('get [key]', 
         'Get configuration values', 
         (yargs: Argv) => yargs.positional('key', {
             describe: 'The configuration key to get (dot-notation can be used to access nested keys)',
-            type: 'string'
+            type: 'string',
         }),
         ConfigService.get
     )

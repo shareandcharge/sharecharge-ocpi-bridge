@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import * as request from 'request-promise-native';
 import { OCPI } from '../src/services/ocpi';
 import Config from '../src/models/config';
-import { Simulator } from './simulation/simulator';
+import { Simulator } from './simulation/cpo-responses/simulator';
 
 const config: Config = require('./config/config.json');
 
