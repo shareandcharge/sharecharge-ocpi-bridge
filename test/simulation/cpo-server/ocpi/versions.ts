@@ -7,7 +7,7 @@ const router = Router();
 
 export default (config: ConfigStore, port: string): Router => {
     const TOKEN_A = config.get('cpo.headers.Authorization').split(' ')[1];
-    router.get('/versions', authenticate(TOKEN_A), async (req: Request, res: Response) => {
+    router.get('/versions', /* authenticate(TOKEN_A),*/ async (req: Request, res: Response) => {
         console.log('GET /versions');
         res.send(<IResponse>{
             status_code: 1000,

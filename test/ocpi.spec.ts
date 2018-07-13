@@ -64,19 +64,16 @@ describe('OCPI', () => {
                 expect(result.data.length).to.equal(config.get('msp.versions').length);
                 expect(result.data[0].version).to.equal(config.get('msp.versions')[0].version);
             });
-            it('should return 401 if Authorization header incorrect', async () => {
-                try {
-                    await request({
-                        method: 'GET',
-                        uri: 'http://127.0.0.1:3001/ocpi/emsp/versions',
-                        headers: {
-                            Authorization: 'Token 123-456'
-                        }
-                    });
-                    expect.fail();
-                } catch (err) {
-                    expect(err.message).to.equal('401 - "Unauthorized"');
-                }
+            it('should return 2000 if Authorization header incorrect', async () => {
+                const result = await request({
+                    method: 'GET',
+                    uri: 'http://127.0.0.1:3001/ocpi/emsp/versions',
+                    headers: {
+                        Authorization: 'Token 123-456'
+                    },
+                    json: true
+                });
+                expect(result.status_code).to.equal(2000);
             });
         });
     });
@@ -123,19 +120,16 @@ describe('OCPI', () => {
                 expect(result.data.endpoints.length).to.equal(config.get('msp.modules.endpoints').length);
                 expect(result.data.endpoints[0].url).to.equal(config.get('msp.modules.endpoints')[0].url);
             });
-            it('should return 401 if not authorized', async () => {
-                try {
-                    await request({
-                        method: 'GET',
-                        uri: 'http://localhost:3001/ocpi/emsp/2.1.1/',
-                        headers: {
-                            Authorization: 'Token 123'
-                        }
-                    });
-                    expect.fail();
-                } catch (err) {
-                    expect(err.message).to.equal('401 - "Unauthorized"');
-                }
+            it('should return 2000 if not authorized', async () => {
+                const result = await request({
+                    method: 'GET',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/',
+                    headers: {
+                        Authorization: 'Token 123'
+                    },
+                    json: true
+                });
+                expect(result.status_code).to.equal(2000);
             });
         });
     });
@@ -203,19 +197,16 @@ describe('OCPI', () => {
                 });
                 expect(result.data.token).to.equal(config.get('msp.credentials.token'));
             });
-            it('should return 401 if not authorized', async () => {
-                try {
-                    await request({
-                        method: 'GET',
-                        uri: 'http://localhost:3001/ocpi/emsp/2.1.1/credentials',
-                        headers: {
-                            Authorization: 'Token 123'
-                        }
-                    });
-                    expect.fail();
-                } catch (err) {
-                    expect(err.message).to.equal('401 - "Unauthorized"');
-                }
+            it('should return 2000 if not authorized', async () => {
+                const result = await request({
+                    method: 'GET',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/credentials',
+                    headers: {
+                        Authorization: 'Token 123'
+                    },
+                    json: true
+                });
+                expect(result.status_code).to.equal(2000);
             });
         });
     });

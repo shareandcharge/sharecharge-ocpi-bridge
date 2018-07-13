@@ -15,7 +15,7 @@ export default (TOKEN: string) => {
         }
         const token = header.split(' ')[1];
         token === TOKEN ? next() : res.send(<IResponse>{
-            status_code: 1000,
+            status_code: 2000,
             status_message: 'Unauthorized',
             timestamp: new Date()
         });

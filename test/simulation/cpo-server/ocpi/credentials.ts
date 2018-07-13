@@ -9,6 +9,33 @@ const router = Router();
 
 export default (config: ConfigStore): Router => {
     const TOKEN_A = config.get('cpo.headers.Authorization').split(' ')[1];
+
+    router.get('/credentials', async (req: Request, res: Response) => {
+        console.log('GET /credentials');
+        res.send(<IResponse>{
+            status_code: 1000,
+            data: {
+                "url": "https://example.com/ocpi/cpo/versions/",
+                "token": "ebf3b399-779f-4497-9b9d-ac6ad3cc44d2",
+                "party_id": "EXA",
+                "country_code": "NL",
+                "business_details": {
+                    "name": "Example Operator",
+                    "logo": {
+                        "url": "https://example.com/img/logo.jpg",
+                        "thumbnail": "https://example.com/img/logo_thumb.jpg",
+                        "category": "OPERATOR",
+                        "type": "jpeg",
+                        "width": 512,
+                        "height": 512
+                    },
+                    "website": "http://example.com"
+                }
+            },
+            timestamp: new Date()
+        })
+    });
+
     router.post('/credentials', authenticate(TOKEN_A), async (req: Request, res: Response) => {
         console.log('POST /credentials');
 

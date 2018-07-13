@@ -5,6 +5,9 @@ import init from './commands/init';
 import config from './commands/config';
 import register from './commands/register';
 import locations from './commands/locations';
+import versions from './commands/versions';
+import modules from './commands/modules';
+import credentials from './commands/credentials';
 
 const pkg = require('../package.json');
 
@@ -15,7 +18,10 @@ const argv = yargs
     .alias('h', 'help')
     .command('init', 'Initialise configuration', {}, init)
     .command('config', 'Get and set configuration values', config, () => argv.showHelp())
-    .command('register', 'Register on Charge Point Operator (CPO) server', {}, register)
+    .command('credentials', 'Query CPO credentials endpoint', credentials, () => argv.showHelp())
+    .command('register', 'Register on CPO server', {}, register)
     .command('locations', 'Use the location module', {}, locations)
+    .command('modules', 'Query CPO modules endpoint', {}, modules)
+    .command('versions', 'Query CPO versions endpoint', {}, versions)
     .demandCommand(1)
     .argv
