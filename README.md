@@ -1,8 +1,11 @@
 # Share & Charge OCPI Bridge
 
-This is the official Open Charge Point Interface (OCPI) bridge for the [sharecharge-core-client](https://github.com/motionwerkGmbH/sharecharge-core-client).
+This is the official Open Charge Point Interface (OCPI) bridge for the [sharecharge-core-client](https://github.com/motionwerkGmbH/sharecharge-core-client). 
 
-[Read the OCPI Specification here](https://github.com/ocpi/ocpi)
+Version: `2.1.1`
+
+[Read the OCPI Specification here](https://github.com/ocpi/ocpi).
+
 
 ### Setup
 

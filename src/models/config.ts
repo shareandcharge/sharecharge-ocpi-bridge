@@ -45,7 +45,7 @@ export default class Config {
         }
     }
 
-    static default(): Config {
+    static get default(): Config {
         const config = new Config();
         return {
             version: config.version,

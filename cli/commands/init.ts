@@ -6,7 +6,6 @@ import Config from '../../src/models/config';
 
 export default async () => {
     console.log('Initializing Open Charge Point Interface (OCPI) Bridge...');
-    const config = new configStore('ocpi', Config.default());
     console.log('\nYour eMobility Service Provider (eMSP) credentials:');
     const msp: Answers = await prompt([
         {
@@ -30,7 +29,7 @@ export default async () => {
             message: 'Enter your eMSP server address:',
         },
     ]);
-    const mspTemp = {
+    const mspCredentials = {
         url: resolveUrl(msp.url, '/ocpi/emsp/versions/'),
         token: Helpers.generateUUID(),
         party_id: msp.party_id,
@@ -38,6 +37,19 @@ export default async () => {
         business_details: {
             name: msp.name
         }
+    };
+    const mspVersions = [{
+        identifier: Config.default.version,
+        endpoints: resolveUrl(mspCredentials.url, `/ocpi/emsp/${Config.default.version}/`)
+    }];
+    const mspModules = {
+        version: Config.default.version,
+        endpoints: Config.default.msp.modules.endpoints.map(endpoint => {
+            return {
+                identifier: endpoint.identifier,
+                url: `${msp.url}/ocpi/emsp/${Config.default.version}/${endpoint.identifier}`
+            }
+        })
     };
     console.log('\nCharge Point Operator (CPO) connection details:');
     const cpo: Answers = await prompt([
@@ -52,7 +64,7 @@ export default async () => {
             message: 'Enter TOKEN_A necessary for authentication:'
         }
     ]);
-    const cpoTemp = {
+    const cpoDetails = {
         versions: cpo.url,
         headers: {
             Authorization: `Token ${cpo.token}`
@@ -60,8 +72,8 @@ export default async () => {
         modules: '',
         endpoints: []
     };
-    console.log('\nYour eMSP credentials:\n' + JSON.stringify(mspTemp, null, 4));
-    console.log('\nConnected CPO details:\n' + JSON.stringify(cpoTemp, null, 4));
+    console.log('\nYour eMSP credentials:\n' + JSON.stringify(mspCredentials, null, 4));
+    console.log('\nConnected CPO details:\n' + JSON.stringify(cpoDetails, null, 4));
     console.log('\n');
     const confirm: Answers = await prompt([
         {
@@ -72,8 +84,11 @@ export default async () => {
     ]);
     if (confirm.save) {
         try {
-            config.set('msp.credentials', mspTemp);
-            config.set('cpo', cpoTemp);
+            const config = new configStore('ocpi', Config.default);
+            config.set('msp.credentials', mspCredentials);
+            config.set('msp.versions', mspVersions);
+            config.set('msp.modules', mspModules);
+            config.set('cpo', cpoDetails);
             console.log('Saved configuration');
         } catch (err) {
             console.log(`Error updating configuration: ${err.message}`);
