@@ -33,12 +33,20 @@ export class Versions {
 
     public serve(): Router {
         this.router.get('/versions', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            console.log('GET versions')
-            res.send(<IResponse>{
-                status_code: 1000,
-                data: this.config.get('msp.versions'),
-                timestamp: new Date()
-            });
+            console.log('GET versions');
+            try {
+                res.send(<IResponse>{
+                    status_code: 1000,
+                    data: this.config.get('msp.versions'),
+                    timestamp: new Date()
+                });
+            } catch (err) {
+                res.send(<IResponse>{
+                    status_code: 1000,
+                    status_message: `Server error: ${err.message}`,
+                    timestamp: new Date()
+                });
+            }
         });
         return this.router;
     }

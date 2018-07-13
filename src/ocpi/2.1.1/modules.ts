@@ -34,12 +34,20 @@ export class Modules {
 
     public serve(): Router {
         this.router.get('/', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            console.log('GET modules')
-            res.send(<IResponse>{
-                status_code: 1000,
-                data: this.config.get('msp.modules'),
-                timestamp: new Date()
-            });
+            console.log('GET modules');
+            try {
+                res.send(<IResponse>{
+                    status_code: 1000,
+                    data: this.config.get('msp.modules'),
+                    timestamp: new Date()
+                });
+            } catch (err) {
+                res.send(<IResponse>{
+                    status_code: 3000,
+                    status_message: `Server error: ${err.message}`,
+                    timestamp: new Date()
+                });
+            }
         });
         return this.router;
     }

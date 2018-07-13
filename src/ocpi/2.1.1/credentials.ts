@@ -63,11 +63,19 @@ export class Credentials {
     public serve(): Router {
         this.router.get('/credentials', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             console.log('GET credentials');
-            res.send(<IResponse>{
-                status_code: 1000,
-                data: this.config.get('msp.credentials'),
-                timestamp: new Date()
-            });
+            try {
+                res.send(<IResponse>{
+                    status_code: 1000,
+                    data: this.config.get('msp.credentials'),
+                    timestamp: new Date()
+                });
+            } catch (err) {
+                res.send(<IResponse>{
+                    status_code: 3000,
+                    status_message: `Server error: ${err.message}`,
+                    timestamp: new Date()
+                });
+            }
         });
         return this.router;
     }
