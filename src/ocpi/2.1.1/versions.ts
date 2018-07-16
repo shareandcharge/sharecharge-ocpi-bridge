@@ -42,7 +42,7 @@ export class Versions {
                 });
             } catch (err) {
                 res.send(<IResponse>{
-                    status_code: 2000,
+                    status_code: 3000,
                     status_message: `Server error: ${err.message}`,
                     timestamp: new Date()
                 });

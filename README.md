@@ -80,3 +80,7 @@ This will start listening on port 3001:
 ```
 curl http://localhost:3001/ocpi/emsp/versions
 ```
+
+### OCPI Coverage
+
+*TODO*
