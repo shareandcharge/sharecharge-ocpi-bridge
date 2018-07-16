@@ -10,6 +10,10 @@
         {
           "identifier": "credentials",
           "url": "http://localhost:3000/ocpi/cpo/2.1.1/credentials"
+        },
+        {
+          "identifier": "tariffs",
+          "url": "http://localhost:3000/ocpi/cpo/2.1.1/tariffs"
         }
       ]
     },
@@ -35,10 +39,6 @@
           {
             "identifier": "credentials",
             "url": "http:/localhost:3001/ocpi/emsp/2.1.1/credentials"
-          },
-          {
-            "identifier": "locations",
-            "url": "http:/localhost:3001/ocpi/emsp/2.1.1/locations"
           }
         ]
       }

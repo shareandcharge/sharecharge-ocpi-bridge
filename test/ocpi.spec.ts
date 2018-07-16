@@ -5,7 +5,8 @@ import * as ConfigStore from 'configstore';
 import { OCPI } from '../src/services/ocpi';
 import { Simulator } from './simulation/cpo-responses/simulator';
 
-const config = new ConfigStore('ocpi-test', require('./config/config.json'));
+const config = new ConfigStore('ocpi-test');
+config.all = require('./config/config.json');
 
 describe('OCPI', () => {
 
@@ -207,6 +208,35 @@ describe('OCPI', () => {
                     json: true
                 });
                 expect(result.status_code).to.equal(2000);
+            });
+        });
+    });
+
+    context('#tariffs', () => {
+        context('CPO', () => {
+            it('should get non-paginated tariffs', async () => {
+                simulator.tariffs.success();
+                const result = await ocpi.tariffs.get();
+                expect(result[0].id).to.equal('12');
+                expect(result[0].elements.length).to.equal(1);
+            });
+            it('should throw if OCPI status code not 1000', async () => {
+                simulator.tariffs.ocpiError();
+                try {
+                    await ocpi.tariffs.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET tariffs: 2000 - Generic client error');
+                }
+            });
+            it('should throw if HTTP status code not 2xx', async () => {
+                simulator.tariffs.httpError();
+                try {
+                    await ocpi.tariffs.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET tariffs: 500 - "Internal server error"');
+                }
             });
         });
     });

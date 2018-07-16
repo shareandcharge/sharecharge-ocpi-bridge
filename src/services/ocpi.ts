@@ -4,7 +4,7 @@ import { app, port } from './server';
 import { Versions } from '../ocpi/2.1.1/versions';
 import { Modules } from '../ocpi/2.1.1/modules';
 import { Credentials } from '../ocpi/2.1.1/credentials';
-import Config from '../models/config';
+import { Tariffs } from '../ocpi/2.1.1/tariffs';
 
 export class OCPI {
 
@@ -13,7 +13,8 @@ export class OCPI {
     constructor(public config: ConfigStore,
                 public versions: Versions,
                 public modules: Modules,
-                public credentials: Credentials) {
+                public credentials: Credentials,
+                public tariffs: Tariffs) {
                     this.createRoutes();
     }
 
@@ -39,7 +40,8 @@ export class OCPI {
         const credentials = new Credentials(config);
         const versions = new Versions(config);
         const modules = new Modules(config);
-        OCPI.instance = new OCPI(config, versions, modules, credentials);
+        const tariffs = new Tariffs(config);
+        OCPI.instance = new OCPI(config, versions, modules, credentials, tariffs);
         return OCPI.instance;
     }
 

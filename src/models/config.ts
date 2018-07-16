@@ -39,7 +39,7 @@ export default class Config {
                     url: '',
                 },
                 {
-                    identifier: 'locations',
+                    identifier: 'tariffs',
                     url: ''
                 }
             ]

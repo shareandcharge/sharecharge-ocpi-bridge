@@ -12,12 +12,16 @@ export default (config: ConfigStore, port: string): Router => {
         res.send(<IResponse>{
             status_code: 1000,
             data: {
-                version: '2.1.1',
-                endpoints: [
-                    {
-                        identifier: 'credentials',
-                        url: `http://localhost:${port}/ocpi/cpo/${config.get('version')}/credentials`
-                    }
+                "version": "2.1.1",
+                "endpoints": [
+                  {
+                    "identifier": "credentials",
+                    "url": "http://localhost:3005/ocpi/cpo/2.1.1/credentials"
+                  },
+                  {
+                    "identifier": "tariffs",
+                    "url": "http://localhost:3005/ocpi/cpo/2.1.1/tariffs"
+                  }
                 ]
             },
             timestamp: new Date()

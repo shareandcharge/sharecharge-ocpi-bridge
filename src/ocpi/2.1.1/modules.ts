@@ -9,7 +9,6 @@ export class Modules {
 
     router: Router;
 
-
     constructor(private config: ConfigStore) {
         this.router = Router();
     }
