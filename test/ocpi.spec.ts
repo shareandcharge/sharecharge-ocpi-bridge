@@ -25,7 +25,7 @@ describe('OCPI', () => {
 
     context('#versions', () => {
         // CLIENT
-        context('CPO', () => {
+        context('CPO endpoints (pull)', () => {
             it('should return array of mutual versions from CPO side', async () => {
                 simulator.versions.success();
                 const result = await ocpi.versions.get();
@@ -52,7 +52,7 @@ describe('OCPI', () => {
             });
         });
         // SERVER
-        context('eMSP', () => {
+        context('eMSP endpoints (push)', () => {
             it('should return array of versions available on eMSP side', async () => {
                 const result = await request({
                     method: 'GET',
@@ -81,7 +81,7 @@ describe('OCPI', () => {
 
     context('#modules', () => {
         // CLIENT
-        context('CPO', () => {
+        context('CPO endpoints (pull)', () => {
             it('should return CPO modules for given version', async () => {
                 simulator.modules.success();
                 const result = await ocpi.modules.get();
@@ -107,7 +107,7 @@ describe('OCPI', () => {
                 }
             });
         });
-        context('eMSP', () => {
+        context('eMSP endpoints (push)', () => {
             it('should return eMSP modules for given version', async () => {
                 const result = await request({
                     method: 'GET',
@@ -137,7 +137,7 @@ describe('OCPI', () => {
 
     context('#credentials', async () => {
         // CLIENT
-        context('CPO', () => {
+        context('CP0O endpoints (pull)', () => {
             it('should return TOKEN_C on GET /credentials ', async () => {
                 simulator.credentials.getSuccess();
                 const result = await ocpi.credentials.get();
@@ -186,7 +186,7 @@ describe('OCPI', () => {
             });
         });
         // SERVER
-        context('eMSP', () => {
+        context('eMSP endpoints (push)', () => {
             it('should return TOKEN_B on GET eMSP credentials', async () => {
                 const result = await request({
                     method: 'GET',
@@ -213,7 +213,7 @@ describe('OCPI', () => {
     });
 
     context('#tariffs', () => {
-        context('CPO', () => {
+        context('CPO endpoints (pull)', () => {
             it('should get non-paginated tariffs', async () => {
                 simulator.tariffs.success();
                 const result = await ocpi.tariffs.get();
@@ -236,6 +236,35 @@ describe('OCPI', () => {
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('GET tariffs: 500 - "Internal server error"');
+                }
+            });
+        });
+    });
+
+    context('#locations', () => {
+        context('CPO endpoints (pull)', () => {
+            const locationId = 'LOC1';
+            it('should return location object of given location ID', async () => {
+                simulator.locations.success(locationId);
+                const result = await ocpi.locations.get(locationId);
+                expect(result.id).to.equal('LOC1');
+            });
+            it('should throw if OCPI response status not 1000', async () => {
+                simulator.locations.ocpiError(locationId);
+                try {
+                    await ocpi.locations.get(locationId);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET locations: 2000 - Generic client error');
+                }
+            });
+            it('should throw if HTTP response not 2xx', async () => {
+                simulator.locations.httpError(locationId);
+                try {
+                    await ocpi.locations.get(locationId);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET locations: 500 - "Internal server error"');
                 }
             });
         });

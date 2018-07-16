@@ -21,6 +21,10 @@ export default (config: ConfigStore, port: string): Router => {
                   {
                     "identifier": "tariffs",
                     "url": "http://localhost:3005/ocpi/cpo/2.1.1/tariffs"
+                  },
+                  {
+                    "identifier": "locations",
+                    "url": "http://localhost:3005/ocpi/cpo/2.1.1/locations"
                   }
                 ]
             },

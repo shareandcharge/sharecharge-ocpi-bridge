@@ -5,6 +5,7 @@ import versions from './ocpi/versions';
 import modules from './ocpi/modules';
 import credentials from './ocpi/credentials';
 import tariffs from './ocpi/tariffs';
+import locations from './ocpi/locations';
 
 const config = new ConfigStore('ocpi');
 const port = process.env.PORT || '3005';
@@ -13,7 +14,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use('/ocpi/cpo/', versions(config, port));
-app.use('/ocpi/cpo/2.1.1/', modules(config, port), credentials(config), tariffs(config));
+app.use('/ocpi/cpo/2.1.1/', modules(config, port), credentials(config), tariffs(config), locations(config));
 
 
 app.listen(port, () => {

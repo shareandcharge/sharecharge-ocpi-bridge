@@ -1,7 +1,9 @@
-import { Arguments } from "yargs";
+import { Argv } from 'yargs';
 
-// use locations module
-
-export default (args: Arguments) => {
-    
-}
+export default (yargs: Argv) => yargs
+    .usage("Usage: locations <id>")
+    .positional('id', {
+        describe: 'the unique identifier of the location',
+        type: 'string',
+    })
+    .demandOption('id');

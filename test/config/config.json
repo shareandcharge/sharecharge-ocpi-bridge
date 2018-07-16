@@ -14,6 +14,10 @@
         {
           "identifier": "tariffs",
           "url": "http://localhost:3000/ocpi/cpo/2.1.1/tariffs"
+        },
+        { 
+          "identifier": "locations",
+          "url": "http://localhost:3000/ocpi/cpo/2.1.1/locations"
         }
       ]
     },
