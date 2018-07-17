@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
-import * as request from 'request-promise-native';
 import * as ConfigStore from 'configstore';
 import * as urlJoin from 'url-join';
 import IToken from './interfaces/iToken';
-import authenticate from '../../middleware/authenticate';
+// import authenticate from '../../middleware/authenticate';
 import Helpers from '../../helpers/helpers';
-import IResponse from './interfaces/iResponse';
+// import IResponse from './interfaces/iResponse';
+import send from '../../services/send';
 
 export class Tokens {
 
@@ -25,17 +25,12 @@ export class Tokens {
 
     public async get(uid: string): Promise<IToken> {
         try {
-            const result = await request({
+            const result = await send({
                 method: 'GET',
                 uri: this.createUri(uid),
                 headers: this.config.get('cpo.headers'),
-                json: true
             });
-            if (result.status_code === 1000) {
-                return result.data;
-            } else {
-                throw Error(`${result.status_code} - ${result.status_message}`);
-            }
+            return result;
         } catch (err) {
             throw Error(`GET tokens: ${err.message}`);
         }
@@ -43,25 +38,16 @@ export class Tokens {
 
     public async put(token: IToken): Promise<void> {
         try {
-            const result = await request({
+            const result = await send({
                 method: 'PUT', 
                 uri: this.createUri(token.uid),
                 headers: this.config.get('cpo.headers'),
                 body: token,
-                json: true
             });
-            if (result.status_code === 1000) {
-                return result.data;
-            } else {
-                throw Error(`${result.status_code} - ${result.status_message}`);
-            }
+            return result;
         } catch (err) {
             throw Error(`PUT tokens: ${err.message}`);
         }
-    }
-
-    public serve(): Router {
-        return this.router;
     }
     
 }
