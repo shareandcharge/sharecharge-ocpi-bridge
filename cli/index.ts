@@ -11,6 +11,7 @@ import tariffs from './commands/tariffs';
 import locationsBuilder from './commands/locations';
 import locationsHandler from './services/locations';
 import tokensBuilder from './commands/tokens';
+import sessions from './commands/sessions';
 
 const pkg = require('../package.json');
 
@@ -25,6 +26,7 @@ const argv = yargs
     .command('register', 'Register on CPO server', {}, register)
     .command('locations <id>', 'Use the location module', locationsBuilder, locationsHandler)
     .command('modules', 'Query CPO modules endpoint', {}, modules)
+    .command('sessions', 'Query CPO sessions endpoint', {}, sessions)
     .command('tariffs', 'Query CPO tariffs endpoint', {}, tariffs)
     .command('tokens', 'Add tokens to CPO cache', tokensBuilder, () => argv.showHelp())
     .command('versions', 'Query CPO versions endpoint', {}, versions)

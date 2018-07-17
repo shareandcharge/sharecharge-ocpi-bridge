@@ -29,6 +29,10 @@ export default (config: ConfigStore, port: string): Router => {
                   {
                     "identifier": "locations",
                     "url": "http://localhost:3005/ocpi/cpo/2.1.1/locations"
+                  },
+                  {
+                    "identifier": "sessions",
+                    "url": "http://localhost:3005/ocpi/cpo/2.1.1/sessions"
                   }
                 ]
             },

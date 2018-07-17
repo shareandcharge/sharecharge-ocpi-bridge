@@ -33,7 +33,7 @@ export default class TokensService {
                 message: 'Is token valid?'
             },
         ]);
-        await ocpi.tokens.put({
+        await ocpi.tokens.put(<IToken>{
             uid: token.uid,
             type: 'OTHER',
             auth_id: token.auth_id,

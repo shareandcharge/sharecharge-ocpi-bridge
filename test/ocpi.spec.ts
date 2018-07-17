@@ -332,4 +332,32 @@ describe('OCPI', () => {
         });
     });
 
+    context.skip('#sessions', () => {
+        context('CPO endpoints (pull)', () => {
+            it('should return location object of given location ID', async () => {
+                simulator.sessions.success();
+                const result = await ocpi.sessions.get();
+                expect(result[0].id).to.equal('LOC1');
+            });
+            it('should throw if OCPI response status not 1000', async () => {
+                simulator.sessions.ocpiError();
+                try {
+                    await ocpi.sessions.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET locations: 2000 - Generic client error');
+                }
+            });
+            it('should throw if HTTP response not 2xx', async () => {
+                simulator.sessions.httpError();
+                try {
+                    await ocpi.sessions.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET locations: 500 - "Internal server error"');
+                }
+            });
+        });
+    });
+
 });
