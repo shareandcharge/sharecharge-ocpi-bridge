@@ -19,6 +19,10 @@ export default (config: ConfigStore, port: string): Router => {
                     "url": "http://localhost:3005/ocpi/cpo/2.1.1/credentials"
                   },
                   {
+                    "identifier": "tokens",
+                    "url": "http://localhost:3005/ocpi/cpo/2.1.1/tokens"
+                  },
+                  {
                     "identifier": "tariffs",
                     "url": "http://localhost:3005/ocpi/cpo/2.1.1/tariffs"
                   },

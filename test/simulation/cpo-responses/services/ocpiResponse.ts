@@ -1,4 +1,4 @@
-export const ocpiSuccess = (data: any) => {
+export const ocpiSuccess = (data?: any) => {
     return {
         data,
         status_code: 1000,

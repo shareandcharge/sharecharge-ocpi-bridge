@@ -4,6 +4,7 @@ import * as request from 'request-promise-native';
 import * as ConfigStore from 'configstore';
 import { OCPI } from '../src/services/ocpi';
 import { Simulator } from './simulation/cpo-responses/simulator';
+import IToken from '../src/ocpi/2.1.1/interfaces/iToken';
 
 const config = new ConfigStore('ocpi-test');
 config.all = require('./config/config.json');
@@ -265,6 +266,67 @@ describe('OCPI', () => {
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('GET locations: 500 - "Internal server error"');
+                }
+            });
+        });
+    });
+
+    context('#tokens', () => {
+        const uid = '012345678';
+        const token = <IToken>{
+            uid,
+            type: 'OTHER',
+            auth_id: '12345',
+            issuer: config.get('msp.credentials.business_details.name'),
+            valid: true,
+            whitelist: 'ALWAYS',
+            last_updated: new Date()
+        }
+        context('CPO endpoints (push)', () => {
+            it('should get token cached by CPO by its UID', async () => {
+                simulator.tokens.getSuccess(uid);
+                const result = await ocpi.tokens.get(uid);
+                expect(result.uid).to.equal('012345678');
+            });
+            it('should throw if OCPI response not 1000', async () => {
+                simulator.tokens.getOcpiError(uid);
+                try {
+                    await ocpi.tokens.get(uid);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET tokens: 2000 - Generic client error');
+                }
+            });
+            it('should throw if HTTP response not 2xx', async () => {
+                simulator.tokens.getHttpError(uid);
+                try {
+                    await ocpi.tokens.get(uid);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET tokens: 400 - "Bad request"');
+                }
+            });
+            it.skip('should return 1000 if updated token cache successfully', async () => {
+                simulator.tokens.putSuccess(token);
+                const result = await ocpi.tokens.put(token);
+                expect(result).to.equal(undefined);
+            });
+            it.skip('should throw if OCPI response not 1000', async () => {
+                simulator.tokens.putOcpiError(token);
+                try {
+                    await ocpi.tokens.put(token);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('PUT tokens: 2000 - Generic client error');
+                }
+            });
+            it.skip('should throw if HTTP response not 2xx', async () => {
+                simulator.tokens.putHttpError(token);
+                try {
+                    await ocpi.tokens.put(token);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('PUT tokens: 500 - "Internal server error"');
                 }
             });
         });

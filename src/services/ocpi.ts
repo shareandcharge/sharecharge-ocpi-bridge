@@ -6,6 +6,7 @@ import { Modules } from '../ocpi/2.1.1/modules';
 import { Credentials } from '../ocpi/2.1.1/credentials';
 import { Tariffs } from '../ocpi/2.1.1/tariffs';
 import { Locations } from '../ocpi/2.1.1/locations';
+import { Tokens } from '../ocpi/2.1.1/tokens';
 
 export class OCPI {
 
@@ -16,7 +17,8 @@ export class OCPI {
                 public modules: Modules,
                 public credentials: Credentials,
                 public tariffs: Tariffs,
-                public locations: Locations) {
+                public locations: Locations,
+                public tokens: Tokens) {
                     this.createRoutes();
     }
 
@@ -44,7 +46,8 @@ export class OCPI {
         const modules = new Modules(config);
         const tariffs = new Tariffs(config);
         const locations = new Locations(config);
-        OCPI.instance = new OCPI(config, versions, modules, credentials, tariffs, locations);
+        const tokens = new Tokens(config);
+        OCPI.instance = new OCPI(config, versions, modules, credentials, tariffs, locations, tokens);
         return OCPI.instance;
     }
 
