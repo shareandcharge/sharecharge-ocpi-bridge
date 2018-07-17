@@ -43,7 +43,8 @@ export default class Config {
                     url: ''
                 }
             ]
-        }
+        },
+        driver_token: ''
     }
 
     static get default(): Config {

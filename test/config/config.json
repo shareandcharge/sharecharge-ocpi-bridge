@@ -53,6 +53,7 @@
             "url": "http:/localhost:3001/ocpi/emsp/2.1.1/tokens"
           }
         ]
-      }
+      },
+      "driver_token": "1234"
     }
   }

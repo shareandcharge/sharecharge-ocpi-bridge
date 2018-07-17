@@ -87,7 +87,8 @@ export default async () => {
     ]);
     if (confirm.save) {
         try {
-            const config = new ConfigStore('ocpi', Config.default);
+            const config = new ConfigStore('ocpi');
+            config.all = Config.default;
             config.set('msp.credentials', mspCredentials);
             config.set('msp.versions', mspVersions);
             config.set('msp.modules', mspModules);
