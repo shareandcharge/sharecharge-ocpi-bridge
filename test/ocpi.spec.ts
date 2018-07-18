@@ -332,8 +332,8 @@ describe('OCPI', () => {
         });
     });
 
-    context.skip('#sessions', () => {
-        context('CPO endpoints (pull)', () => {
+    context('#sessions', () => {
+        context.skip('CPO endpoints (pull)', () => {
             it('should return location object of given location ID', async () => {
                 simulator.sessions.success();
                 const result = await ocpi.sessions.get();
@@ -356,6 +356,19 @@ describe('OCPI', () => {
                 } catch (err) {
                     expect(err.message).to.equal('GET locations: 500 - "Internal server error"');
                 }
+            });
+        });
+        context('eMSP endpoints (push)', () => {
+            it('should respond with 3000 if session does not exist', async () => {
+                const result = await request({
+                    method: 'GET',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/sessions/de/sc/125',
+                    headers: {
+                        Authorization: 'Token ' + config.get('msp.credentials.token')
+                    },
+                    json: true
+                });
+                expect(result.status_code).to.equal(3000);
             });
         });
     });
