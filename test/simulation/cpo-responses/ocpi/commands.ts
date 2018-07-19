@@ -19,50 +19,49 @@ export class Commands {
         this.token = config.get('msp.token');
     }
 
-    public startSuccess(location_id: string): void {
+    public startSuccess(location_id: string, req_id: string): void {
         this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
-            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id,
             token: this.token,
             location_id
-        }).reply(200, ocpiSuccess('ACCEPTED'));
+        }).reply(200, ocpiSuccess({ result: 'ACCEPTED' }));
     }
 
-    public startOcpiError(location_id: string): void {
+    public startOcpiError(location_id: string, req_id: string): void {
         this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
-            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id,
             token: this.token,
             location_id
         }).reply(200, ocpiError());
     }
 
-    public startHttpError(location_id: string): void {
+    public startHttpError(location_id: string, req_id: string): void {
         this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
-            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id,
             token: this.token,
             location_id
         }).reply(400, 'Bad request');
     }
 
-    public stopSuccess(session_id: string): void {
+    public stopSuccess(session_id: string, req_id: string): void {
         this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
-            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + req_id,
             session_id
-        }).reply(200, ocpiSuccess('REJECTED'));
+        }).reply(200, ocpiSuccess({ result: 'REJECTED' }));
     }
 
-    public stopOcpiError(session_id: string): void {
+    public stopOcpiError(session_id: string, req_id: string): void {
         this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
-            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + req_id,
             session_id
         }).reply(200, ocpiError());
     }
 
-    public stopHttpError(session_id: string): void {
+    public stopHttpError(session_id: string, req_id: string): void {
         this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
-            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + req_id,
             session_id
         }).reply(500, 'Internal server error');
     }
-
 
 }

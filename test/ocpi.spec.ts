@@ -367,50 +367,51 @@ describe('OCPI', () => {
     });
 
     context.only('#commands', () => {
-        const id = 'LOC1';
+        const location = 'LOC1';
+        const id = 'abc';
         const session = '12345';
         context('CPO endpoints', () => {
             it('should send request to remotely start a session', async () => {
-                simulator.commands.startSuccess(id);
-                const result = await ocpi.commands.startSession(id);
-                expect(result).to.equal('ACCEPTED');
+                simulator.commands.startSuccess(location, id);
+                const result = await ocpi.commands.startSession(location, id);
+                expect(result.result).to.equal('ACCEPTED');
             });
             it('should throw if ocpi response not 1000', async () => {
-                simulator.commands.startOcpiError(id);
+                simulator.commands.startOcpiError(location, id);
                 try {
-                    await ocpi.commands.startSession(id);
+                    await ocpi.commands.startSession(location, id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/START_SESSION: 2000 - Generic client error');
                 }
             });
             it('should throw if http response not 2xx', async () => {
-                simulator.commands.startHttpError(id);
+                simulator.commands.startHttpError(location, id);
                 try {
-                    await ocpi.commands.startSession(id);
+                    await ocpi.commands.startSession(location, id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/START_SESSION: 400 - "Bad request"');
                 }
             });
             it('should send request to remotely stop a session', async () => {
-                simulator.commands.stopSuccess(session);
-                const result = await ocpi.commands.stopSession(session);
-                expect(result).to.equal('REJECTED');
+                simulator.commands.stopSuccess(session, id);
+                const result = await ocpi.commands.stopSession(session, id);
+                expect(result.result).to.equal('REJECTED');
             });
             it('should throw if ocpi response not 1000', async () => {
-                simulator.commands.stopOcpiError(session);
+                simulator.commands.stopOcpiError(session, id);
                 try {
-                    await ocpi.commands.stopSession(session);
+                    await ocpi.commands.stopSession(session, id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/STOP_SESSION: 2000 - Generic client error');
                 }
             });
             it('should throw if http response not 2xx', async () => {
-                simulator.commands.stopHttpError(session);
+                simulator.commands.stopHttpError(session, id);
                 try {
-                    await ocpi.commands.stopSession(session);
+                    await ocpi.commands.stopSession(session, id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/STOP_SESSION: 500 - "Internal server error"');
