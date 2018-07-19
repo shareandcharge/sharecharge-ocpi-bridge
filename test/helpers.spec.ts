@@ -14,7 +14,7 @@ describe('Helpers', () => {
 
     it('should parse versions for correct version url', () => {
         const url = Helpers.getUrlByVersion(config.msp.versions, '2.1.1');
-        expect(url).to.equal('http:/localhost:3001/ocpi/emsp/2.1.1/');
+        expect(url).to.equal('http://localhost:3001/ocpi/emsp/2.1.1/');
     });
 
 });

@@ -26,6 +26,10 @@
         {
           "identifier": "sessions",
           "url": "http://localhost:3000/ocpi/cpo/2.1.1/sessions"
+        },
+        {
+          "identifier": "commands",
+          "url": "http://localhost:3000/ocpi/cpo/2.1.1/commands"
         }
       ]
     },
@@ -42,7 +46,7 @@
       "versions": [
         {
           "version": "2.1.1",
-          "url": "http:/localhost:3001/ocpi/emsp/2.1.1/"
+          "url": "http://localhost:3001/ocpi/emsp/2.1.1/"
         }
       ],
       "modules": {
@@ -50,14 +54,18 @@
         "endpoints": [
           {
             "identifier": "credentials",
-            "url": "http:/localhost:3001/ocpi/emsp/2.1.1/credentials"
+            "url": "http://localhost:3001/ocpi/emsp/2.1.1/credentials"
           },
           {
             "identifier": "tokens",
-            "url": "http:/localhost:3001/ocpi/emsp/2.1.1/tokens"
+            "url": "http://localhost:3001/ocpi/emsp/2.1.1/tokens"
+          },
+          {
+            "identifier": "commands",
+            "url": "http://localhost:3001/ocpi/emsp/2.1.1/commands"
           }
         ]
       },
-      "driver_token": "1234"
+      "token": {}
     }
   }

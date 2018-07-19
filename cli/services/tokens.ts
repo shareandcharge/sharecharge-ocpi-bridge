@@ -42,7 +42,7 @@ export default class TokensService {
             whitelist: 'ALWAYS',
             last_updated: new Date()
         });
-        config.set('msp.driver_token', token.uid);
+        config.set('msp.token', token);
         console.log(`New default driver access token: ${token.uid}`);
     }
 

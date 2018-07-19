@@ -43,15 +43,15 @@ export class Tokens {
     }
 
     public putSuccess(token: IToken): void {
-        this.host.put(this.endpoint + token.uid, token).reply(200, ocpiSuccess());
+        this.host.put(this.endpoint + token.uid, JSON.stringify(token)).reply(200, ocpiSuccess());
     }
 
     public putOcpiError(token: IToken): void {
-        this.host.put(this.endpoint + token.uid, token).reply(200, ocpiError());
+        this.host.put(this.endpoint + token.uid, JSON.stringify(token)).reply(200, ocpiError());
     }
 
     public putHttpError(token: IToken): void {
-        this.host.put(this.endpoint + token.uid, token).reply(500, 'Internal server error');
+        this.host.put(this.endpoint + token.uid, JSON.stringify(token)).reply(500, 'Internal server error');
     }
 
 

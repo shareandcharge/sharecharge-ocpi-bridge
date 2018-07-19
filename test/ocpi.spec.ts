@@ -5,9 +5,11 @@ import * as ConfigStore from 'configstore';
 import { OCPI } from '../src/services/ocpi';
 import { Simulator } from './simulation/cpo-responses/simulator';
 import IToken from '../src/ocpi/2.1.1/interfaces/iToken';
+import { token } from './config/token';
 
 const config = new ConfigStore('ocpi-test');
 config.all = require('./config/config.json');
+config.set('msp.token', token);
 
 describe('OCPI', () => {
 
@@ -273,15 +275,6 @@ describe('OCPI', () => {
 
     context('#tokens', () => {
         const uid = '012345678';
-        const token = <IToken>{
-            uid,
-            type: 'OTHER',
-            auth_id: '12345',
-            issuer: config.get('msp.credentials.business_details.name'),
-            valid: true,
-            whitelist: 'ALWAYS',
-            last_updated: new Date()
-        }
         context('CPO endpoints (push)', () => {
             it('should get token cached by CPO by its UID', async () => {
                 simulator.tokens.getSuccess(uid);
@@ -306,12 +299,12 @@ describe('OCPI', () => {
                     expect(err.message).to.equal('GET tokens: 400 - "Bad request"');
                 }
             });
-            it.skip('should return 1000 if updated token cache successfully', async () => {
+            it('should return 1000 if updated token cache successfully', async () => {
                 simulator.tokens.putSuccess(token);
                 const result = await ocpi.tokens.put(token);
                 expect(result).to.equal(undefined);
             });
-            it.skip('should throw if OCPI response not 1000', async () => {
+            it('should throw if OCPI response not 1000', async () => {
                 simulator.tokens.putOcpiError(token);
                 try {
                     await ocpi.tokens.put(token);
@@ -320,7 +313,7 @@ describe('OCPI', () => {
                     expect(err.message).to.equal('PUT tokens: 2000 - Generic client error');
                 }
             });
-            it.skip('should throw if HTTP response not 2xx', async () => {
+            it('should throw if HTTP response not 2xx', async () => {
                 simulator.tokens.putHttpError(token);
                 try {
                     await ocpi.tokens.put(token);
@@ -373,13 +366,31 @@ describe('OCPI', () => {
         });
     });
 
-    context.only('#commands', () => {
+    context('#commands', () => {
         const id = 'LOC1';
         context('CPO endpoints', () => {
             it('should send request to remotely start a session', async () => {
                 simulator.commands.startSuccess(id);
-                const result = await ocpi.commands.start(id);
-                expect(result.data).to.equal(undefined);
+                const result = await ocpi.commands.startSession(id);
+                expect(result).to.equal('ACCEPTED');
+            });
+            it('should throw if ocpi response not 1000', async () => {
+                simulator.commands.startOcpiError(id);
+                try {
+                    await ocpi.commands.startSession(id);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('POST commands/START_SESSION: 2000 - Generic client error');
+                }
+            });
+            it('should throw if http response not 2xx', async () => {
+                simulator.commands.startHttpError(id);
+                try {
+                    await ocpi.commands.startSession(id);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('POST commands/START_SESSION: 400 - "Bad request"');
+                }
             });
         });
     });
