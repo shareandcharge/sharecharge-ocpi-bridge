@@ -373,4 +373,15 @@ describe('OCPI', () => {
         });
     });
 
+    context.only('#commands', () => {
+        const id = 'LOC1';
+        context('CPO endpoints', () => {
+            it('should send request to remotely start a session', async () => {
+                simulator.commands.startSuccess(id);
+                const result = await ocpi.commands.start(id);
+                expect(result.data).to.equal(undefined);
+            });
+        });
+    });
+
 });

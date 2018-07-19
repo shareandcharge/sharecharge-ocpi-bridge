@@ -6,6 +6,7 @@ import { Tariffs } from './ocpi/tariffs';
 import { Locations } from './ocpi/locations';
 import { Tokens } from './ocpi/tokens';
 import { Sessions } from './ocpi/sessions';
+import { Commands } from './ocpi/commands';
 
 export class Simulator {
 
@@ -16,6 +17,7 @@ export class Simulator {
     locations: Locations;
     tokens: Tokens;
     sessions: Sessions;
+    commands: Commands;
 
     constructor(config: ConfigStore) {
         this.versions = new Versions(config);
@@ -25,6 +27,7 @@ export class Simulator {
         this.tariffs = new Tariffs(config);
         this.tokens = new Tokens(config);
         this.sessions = new Sessions(config);
+        this.commands = new Commands(config);
     }
 
 }
