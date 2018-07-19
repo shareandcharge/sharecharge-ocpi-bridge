@@ -366,8 +366,9 @@ describe('OCPI', () => {
         });
     });
 
-    context('#commands', () => {
+    context.only('#commands', () => {
         const id = 'LOC1';
+        const session = '12345';
         context('CPO endpoints', () => {
             it('should send request to remotely start a session', async () => {
                 simulator.commands.startSuccess(id);
@@ -390,6 +391,29 @@ describe('OCPI', () => {
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/START_SESSION: 400 - "Bad request"');
+                }
+            });
+            it('should send request to remotely stop a session', async () => {
+                simulator.commands.stopSuccess(session);
+                const result = await ocpi.commands.stopSession(session);
+                expect(result).to.equal('REJECTED');
+            });
+            it('should throw if ocpi response not 1000', async () => {
+                simulator.commands.stopOcpiError(session);
+                try {
+                    await ocpi.commands.stopSession(session);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('POST commands/STOP_SESSION: 2000 - Generic client error');
+                }
+            });
+            it('should throw if http response not 2xx', async () => {
+                simulator.commands.stopHttpError(session);
+                try {
+                    await ocpi.commands.stopSession(session);
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('POST commands/STOP_SESSION: 500 - "Internal server error"');
                 }
             });
         });

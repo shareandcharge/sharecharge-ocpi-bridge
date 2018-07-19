@@ -7,6 +7,7 @@ import Helpers from '../../helpers/helpers';
 // import IResponse from './interfaces/iResponse';
 import send from '../../services/send';
 import IStartSession from './interfaces/iStartSession';
+import IStopSession from './interfaces/iStopSession';
 
 export class Commands {
 
@@ -38,6 +39,23 @@ export class Commands {
             return result;
         } catch (err) {
             throw Error(`POST commands/START_SESSION: ${err.message}`);
+        }
+    }
+
+    public async stopSession(session_id: string): Promise<boolean> {
+        try {
+            const result = await send({
+                method: 'POST',
+                uri: this.createUri('STOP_SESSION'),
+                headers: this.config.get('cpo.headers'),
+                body: <IStopSession>{
+                    response_url: Helpers.getEndpointByIdentifier(this.config.get('msp.modules.endpoints'), 'commands'),
+                    session_id
+                }
+            });
+            return result;
+        } catch (err) {
+            throw Error(`POST commands/STOP_SESSION: ${err.message}`);
         }
     }
     

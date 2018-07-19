@@ -2,6 +2,7 @@ import * as nock from 'nock';
 import * as ConfigStore from 'configstore';
 import { ocpiSuccess, ocpiError } from '../services/ocpiResponse';
 import IStartSession from '../../../../src/ocpi/2.1.1/interfaces/iStartSession';
+import IStopSession from '../../../../src/ocpi/2.1.1/interfaces/iStopSession';
 import IToken from '../../../../src/ocpi/2.1.1/interfaces/iToken';
 
 export class Commands {
@@ -42,16 +43,25 @@ export class Commands {
         }).reply(400, 'Bad request');
     }
 
-    public stopSuccess(): void {
-        this.host.put(this.endpoint).reply(200, ocpiSuccess());
+    public stopSuccess(session_id: string): void {
+        this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            session_id
+        }).reply(200, ocpiSuccess('REJECTED'));
     }
 
-    public stopOcpiError(): void {
-        this.host.put(this.endpoint).reply(200, ocpiError());
+    public stopOcpiError(session_id: string): void {
+        this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            session_id
+        }).reply(200, ocpiError());
     }
 
-    public stopHttpError(): void {
-        this.host.put(this.endpoint).reply(500, 'Internal server error');
+    public stopHttpError(session_id: string): void {
+        this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands',
+            session_id
+        }).reply(500, 'Internal server error');
     }
 
 
