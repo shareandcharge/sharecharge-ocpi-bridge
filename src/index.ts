@@ -3,8 +3,6 @@ import * as ConfigStore from 'configstore';
 import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
 import { OCPI } from './services/ocpi';
 
-const prodConfig: ConfigStore = new ConfigStore('ocpi');
-
 export default class Bridge implements IBridge {
 
     private ocpi: OCPI;
@@ -15,9 +13,7 @@ export default class Bridge implements IBridge {
     private cdr = new Subject<ICDR>();
     public cdr$ = this.cdr.asObservable();
 
-    // express middleware seems to use single scope (whichever is initiated first)
-    // therefore config needs to be the same across all tests
-    constructor(config: ConfigStore = prodConfig) {
+    constructor(public config: ConfigStore = new ConfigStore('ocpi')) {
         this.ocpi = OCPI.getInstance(config);
     }
 
@@ -26,8 +22,6 @@ export default class Bridge implements IBridge {
     }
 
     public loadTariffs(tariffs: any): void {
-        // OCPI defines a CDR modules which pushes session prices to us: 
-        // we don't care about the tariffs in this bridge
         return;
     }
 
@@ -36,20 +30,64 @@ export default class Bridge implements IBridge {
     }
 
     public async start(parameters: ISession): Promise<IResult> {
-        // call ocpi.commands.startSession(evseId);
-        // subscribe to ocpi.commands.sessionStarted$
-        return {
-            success: true,
-            data: {
-                sessionId: '123'
+        try {
+            const locationId = this.config.get(`locations.${parameters.scId}`);
+            const requestId = Math.round(Math.random() * 100000).toString();
+            const requested = await this.ocpi.commands.startSession(locationId, requestId);
+            if (requested.result !== 'ACCEPTED') {
+                throw Error('Request not accepted');
+            }
+            this.ocpi.commands.started$.subscribe(started => {
+                if (started.id === requestId) {
+                    if (started.success === true) {
+                        return {
+                            success: true,
+                            data: {
+                                sessionId: requestId
+                            }
+                        }
+                    } else {
+                        throw Error('Session start not accepted on charge point');
+                    }
+                }
+            });
+        } catch (err) {
+            return {
+                success: false,
+                data: {
+                    message: err.message
+                }
             }
         }
     }
 
     public async stop(parameters: IStopParameters): Promise<IResult> {
-        return {
-            success: true,
-            data: {}
+        try {
+            const locationId = this.config.get(`locations.${parameters.scId}`);
+            const requestId = Math.round(Math.random() * 100000).toString();
+            const requested = await this.ocpi.commands.stopSession(locationId, requestId);
+            if (requested.result !== 'ACCEPTED') {
+                throw Error('Request not accepted');
+            }
+            this.ocpi.commands.stopped$.subscribe(stopped => {
+                if (stopped.id === requestId) {
+                    if (stopped.success === true) {
+                        return {
+                            success: true,
+                            data: {}
+                        }
+                    } else {
+                        throw Error('Session stop not accepted on charge point');
+                    }
+                }
+            });
+        } catch (err) {
+            return {
+                success: false,
+                data: {
+                    message: err.message
+                }
+            }
         }
     }
 
