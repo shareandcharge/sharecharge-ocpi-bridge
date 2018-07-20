@@ -3,16 +3,20 @@ import { expect } from 'chai';
 import * as ConfigStore from 'configstore';
 import Bridge from '../src';
 import { ISession } from '@motionwerk/sharecharge-common/dist/common';
+import { Simulator } from './simulation/cpo-responses/simulator';
 
-const config = new ConfigStore('ocpi-test', require('./config/config.json'));
+const config = new ConfigStore('ocpi-test');
+config.all = require('./config/config.json');
 
 describe('Bridge Interface', () => {
 
     let bridge: Bridge;
     let session: ISession;
+    let simulator: Simulator;
 
-    beforeEach(() => {
+    before(() => {
         bridge = new Bridge(config);
+        simulator = new Simulator(config);
         session = {
             scId: '0x01',
             evseId: 'de-123',
@@ -20,6 +24,8 @@ describe('Bridge Interface', () => {
             tariffValue: '20'
         }
     });
+
+    after(() => bridge.ocpi.stopServer());
 
     it('should get name of bridge', () => {
         expect(bridge.name).to.equal('OCPI');
@@ -31,18 +37,20 @@ describe('Bridge Interface', () => {
 
     context('start', () => {
         it('should return session id on successful start', async () => {
-            const result = await bridge.start(session);
+            simulator.commands.startSuccess('LOC1', '55', true);
+            const result = await bridge.start(session, '55');
             expect(result.success).to.equal(true);
+            expect(result.data.sessionId).to.equal('55');
         });
     });
 
     context('stop', () => {
         it('should return true on successful stop', async () => {
-            const startRes = await bridge.start(session);
+            simulator.commands.stopSuccess('LOC1', '44', true);
             const result = await bridge.stop({
                 scId: session.scId,
                 evseId: session.evseId,
-                sessionId: startRes.data.sessionId
+                sessionId: '44'
             });
             expect(result.success).to.equal(true);
         });

@@ -31,7 +31,8 @@ export class OCPI {
         app.use(`/ocpi/emsp/${this.config.all.version}/`, 
             this.modules.serve(),
             this.credentials.serve(),
-            this.sessions.serve()
+            this.sessions.serve(),
+            this.commands.serve()
         );
     }
     

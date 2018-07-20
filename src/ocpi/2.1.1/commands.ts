@@ -11,6 +11,7 @@ import IStopSession from './interfaces/iStopSession';
 import ICommandResponse from './interfaces/iCommandResponse';
 import authenticate from '../../middleware/authenticate';
 import { Subject } from 'rxjs';
+import IResponse from './interfaces/iResponse';
 
 export class Commands {
 
@@ -75,18 +76,45 @@ export class Commands {
     }
 
     public serve(): Router {
-        this.router.post('/command/START_SESSION/:uid', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            if (req.body === 'ACCEPTED') {
-                this.started.next({ id: req.params.uid, success: true });
-            } else {
-                this.started.next({ id: req.params.uid, success: false });
+        this.router.post('/commands/START_SESSION/:uid', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
+            try {
+                console.log(`POST /command/START_SESSION/${req.params.uid}`);
+                if (req.body.result === 'ACCEPTED') {
+                    this.started.next({ id: req.params.uid, success: true });
+
+                } else {
+                    this.started.next({ id: req.params.uid, success: false });
+                }
+                res.send(<IResponse>{
+                    status_code: 1000,
+                    timestamp: new Date()
+                });
+            } catch (err) {
+                res.send(<IResponse>{
+                    status_code: 3000,
+                    status_message: err.message,
+                    timestamp: new Date()
+                });
             }
         });
-        this.router.post('/command/STOP_SESSION/:uid', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            if (req.body === 'ACCEPTED') {
-                this.stopped.next({ id: req.params.uid, success: true });
-            } else {
-                this.stopped.next({ id: req.params.uid, success: false });
+        this.router.post('/commands/STOP_SESSION/:uid', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
+            try {
+                console.log(`POST /command/STOP_SESSION/${req.params.uid}`);
+                if (req.body.result === 'ACCEPTED') {
+                    this.stopped.next({ id: req.params.uid, success: true });
+                } else {
+                    this.stopped.next({ id: req.params.uid, success: false });
+                }
+                res.send(<IResponse>{
+                    status_code: 1000,
+                    timestamp: new Date()
+                });
+            } catch (err) {
+                res.send(<IResponse>{
+                    status_code: 3000,
+                    status_message: err.message,
+                    timestamp: new Date()
+                });
             }
         });
         return this.router;

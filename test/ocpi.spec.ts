@@ -366,7 +366,7 @@ describe('OCPI', () => {
         });
     });
 
-    context.only('#commands', () => {
+    context('#commands', () => {
         const location = 'LOC1';
         const id = 'abc';
         const session = '12345';
@@ -397,7 +397,7 @@ describe('OCPI', () => {
             it('should send request to remotely stop a session', async () => {
                 simulator.commands.stopSuccess(session, id);
                 const result = await ocpi.commands.stopSession(session, id);
-                expect(result.result).to.equal('REJECTED');
+                expect(result.result).to.equal('ACCEPTED');
             });
             it('should throw if ocpi response not 1000', async () => {
                 simulator.commands.stopOcpiError(session, id);
