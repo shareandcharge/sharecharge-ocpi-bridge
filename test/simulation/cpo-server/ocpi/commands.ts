@@ -4,7 +4,6 @@ import * as request from 'request-promise-native';
 // import authenticate from '../../../../src/middleware/authenticate';
 import IResponse from '../../../../src/ocpi/2.1.1/interfaces/iResponse';
 
-
 const router = Router();
 
 export default (config: ConfigStore): Router => {
@@ -23,7 +22,7 @@ export default (config: ConfigStore): Router => {
                 },
                 json: true
             });
-        }, 1000);
+        }, 2000);
         res.send(<IResponse>{
             status_code: 1000,
             data: {
@@ -33,7 +32,27 @@ export default (config: ConfigStore): Router => {
         })
     });
     router.post('/commands/STOP_SESSION', /* authenticate(TOKEN_A), */ async (req: Request, res: Response) => {
-        console.log(`POST /commands/STOP_SESSION on location ${req.body.location_id}`);
+        console.log(`POST /commands/STOP_SESSION on session ${req.body.session_id}`);
+        setTimeout(async () => {
+            await request({
+                method: 'POST',
+                uri: req.body.response_url,
+                headers: {
+                    Authorization: 'Token ' + config.get('msp.credentials.token')
+                },
+                body: {
+                    result: 'ACCEPTED'
+                },
+                json: true
+            })
+        }, 2000);
+        res.send(<IResponse>{
+            status_code: 1000,
+            data: {
+                result: 'ACCEPTED'
+            },
+            timestamp: new Date()
+        });
     });
     return router;
 }

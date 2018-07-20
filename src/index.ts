@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import * as ConfigStore from 'configstore';
 import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
-import { OCPI } from './services/ocpi';
+import { OCPI, push } from './services/ocpi';
 
 export default class Bridge implements IBridge {
 
@@ -39,9 +39,9 @@ export default class Bridge implements IBridge {
                 if (requested.result !== 'ACCEPTED') {
                     throw Error('Request not accepted');
                 }
-                this.ocpi.commands.started$.subscribe(started => {
-                    if (started.id === requestId) {
-                        if (started.success === true) {
+                push.on('start', data => {
+                    if (data.id === requestId) {
+                        if (data.success === true) {
                             resolve({
                                 success: true,
                                 data: {
@@ -77,9 +77,9 @@ export default class Bridge implements IBridge {
                 if (requested.result !== 'ACCEPTED') {
                     throw Error('Request not accepted');
                 }
-                this.ocpi.commands.stopped$.subscribe(stopped => {
-                    if (stopped.id === parameters.sessionId) {
-                        if (stopped.success === true) {
+                push.on('stop', data => {
+                    if (data.id === parameters.sessionId) {
+                        if (data.success === true) {
                             resolve({
                                 success: true,
                                 data: {}

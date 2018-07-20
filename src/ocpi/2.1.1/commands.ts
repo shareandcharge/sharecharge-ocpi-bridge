@@ -12,18 +12,13 @@ import ICommandResponse from './interfaces/iCommandResponse';
 import authenticate from '../../middleware/authenticate';
 import { Subject } from 'rxjs';
 import IResponse from './interfaces/iResponse';
+import { EventEmitter } from 'events';
 
 export class Commands {
 
     router: Router;
 
-    started = new Subject<{ id: string, success: boolean }>();
-    started$ = this.started.asObservable();
-
-    stopped = new Subject<{ id: string, success: boolean }>();
-    stopped$ = this.stopped.asObservable();
-
-    constructor(private config: ConfigStore) {
+    constructor(private config: ConfigStore, public push: EventEmitter) {
         this.router = Router();
     }
 
@@ -79,13 +74,7 @@ export class Commands {
         this.router.post('/commands/START_SESSION/:uid', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             try {
                 console.log(`POST /command/START_SESSION/${req.params.uid}`);
-                if (req.body.result === 'ACCEPTED') {
-                    console.log('next success');
-                    this.started.next({ id: req.params.uid, success: true });
-                } else {
-                    console.log('next failure');
-                    this.started.next({ id: req.params.uid, success: false });
-                }
+                this.push.emit('start', { id: req.params.uid, success: req.body.result === 'ACCEPTED' });
                 res.send(<IResponse>{
                     status_code: 1000,
                     timestamp: new Date()
@@ -101,13 +90,7 @@ export class Commands {
         this.router.post('/commands/STOP_SESSION/:uid', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             try {
                 console.log(`POST /command/STOP_SESSION/${req.params.uid}`);
-                if (req.body.result === 'ACCEPTED') {
-                    console.log('next success');
-                    this.stopped.next({ id: req.params.uid, success: true });
-                } else {
-                    console.log('next failure');
-                    this.stopped.next({ id: req.params.uid, success: false });
-                }
+                this.push.emit('stop', { id: req.params.uid, success: req.body.result === 'ACCEPTED' })
                 res.send(<IResponse>{
                     status_code: 1000,
                     timestamp: new Date()

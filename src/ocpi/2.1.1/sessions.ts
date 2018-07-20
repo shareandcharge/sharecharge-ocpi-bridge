@@ -9,15 +9,13 @@ import send from '../../services/send';
 import ISession from './interfaces/iSession';
 import authenticate from '../../middleware/authenticate';
 import IResponse from './interfaces/iResponse';
+import { EventEmitter } from 'events';
 
 export class Sessions {
 
     router: Router;
 
-    complete = new Subject<ISession>();
-    complete$ = this.complete.asObservable();
-
-    constructor(private config: ConfigStore) {
+    constructor(private config: ConfigStore, public push: EventEmitter) {
         this.router = Router();
     }
 
@@ -63,7 +61,7 @@ export class Sessions {
                 const session: ISession = req.body;
                 writeFileSync(getConfigDir() + `sessions/${session.id}.json`, JSON.stringify(session));
                 if (session.status === 'COMPLETE') {
-                    this.complete.next(session);
+                    this.push.emit('session', session);
                 }
                 res.send(<IResponse>{
                     status_code: 1000,
@@ -86,7 +84,7 @@ export class Sessions {
                     sessionOnDisk[key] = req.body[key];
                 });
                 if (sessionOnDisk.status === 'COMPLETE') {
-                    this.complete.next(sessionOnDisk);
+                    this.push.emit('session', sessionOnDisk);
                 }
                 writeFileSync(filename, sessionOnDisk);
                 res.send(<IResponse>{

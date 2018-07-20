@@ -9,6 +9,9 @@ import { Locations } from '../ocpi/2.1.1/locations';
 import { Tokens } from '../ocpi/2.1.1/tokens';
 import { Sessions } from '../ocpi/2.1.1/sessions';
 import { Commands } from '../ocpi/2.1.1/commands';
+import { EventEmitter } from 'events';
+
+export const push = new EventEmitter();
 
 export class OCPI {
 
@@ -53,8 +56,8 @@ export class OCPI {
         const tariffs = new Tariffs(config);
         const locations = new Locations(config);
         const tokens = new Tokens(config);
-        const sessions = new Sessions(config);
-        const commands = new Commands(config);
+        const sessions = new Sessions(config, push);
+        const commands = new Commands(config, push);
         OCPI.instance = new OCPI(config, versions, modules, credentials, tariffs, locations, tokens, sessions, commands);
         return OCPI.instance;
     }
