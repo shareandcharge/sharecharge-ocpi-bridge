@@ -418,6 +418,35 @@ describe('OCPI', () => {
                 }
             });
         });
+        context('eMSP endpoints', () => {
+            it('should respond with 1000 on async confirm start', async () => {
+                const result = await request({
+                    method: 'POST',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/1',
+                    headers: {
+                        Authorization: 'Token ' + config.get('msp.credentials.token')
+                    },
+                    body: {
+                        result: 'REJECTED'
+                    },
+                    json: true
+                });
+                expect(result.status_code).to.equal(1000);
+            });
+            it('should respond with 1000 on async confirm stop', async () => {
+                const result = await request({
+                    method: 'POST',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/1',
+                    headers: {
+                        Authorization: 'Token ' + config.get('msp.credentials.token')
+                    },
+                    body: {
+                        result: 'ACCEPTED'
+                    },
+                    json: true
+                });
+                expect(result.status_code).to.equal(1000);
+            });
+        });
     });
-
 });
