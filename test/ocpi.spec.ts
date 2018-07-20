@@ -372,7 +372,7 @@ describe('OCPI', () => {
         const session = '12345';
         context('CPO endpoints', () => {
             it('should send request to remotely start a session', async () => {
-                simulator.commands.startSuccess(location, id);
+                simulator.commands.startSuccess(location, id, 'ACCEPTED', '');
                 const result = await ocpi.commands.startSession(location, id);
                 expect(result.result).to.equal('ACCEPTED');
             });
@@ -395,7 +395,7 @@ describe('OCPI', () => {
                 }
             });
             it('should send request to remotely stop a session', async () => {
-                simulator.commands.stopSuccess(session, id);
+                simulator.commands.stopSuccess(session, id, 'ACCEPTED', '');
                 const result = await ocpi.commands.stopSession(session, id);
                 expect(result.result).to.equal('ACCEPTED');
             });

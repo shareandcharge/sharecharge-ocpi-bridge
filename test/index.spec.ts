@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import * as ConfigStore from 'configstore';
 import Bridge from '../src';
-import { ISession } from '@motionwerk/sharecharge-common/dist/common';
+import { ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
 import { Simulator } from './simulation/cpo-responses/simulator';
 
 const config = new ConfigStore('ocpi-test');
@@ -36,23 +36,48 @@ describe('Bridge Interface', () => {
     });
 
     context('start', () => {
-        it('should return session id on successful start', async () => {
-            simulator.commands.startSuccess('LOC1', '55', true);
+        it('should return session id if start ACCEPTED', async () => {
+            simulator.commands.startSuccess('LOC1', '55', 'ACCEPTED', 'ACCEPTED', true);
             const result = await bridge.start(session, '55');
             expect(result.success).to.equal(true);
             expect(result.data.sessionId).to.equal('55');
         });
+        it('should return false if start request not ACCEPTED', async () => {
+            simulator.commands.startSuccess('LOC1', '55', 'REJECTED', '', true);
+            const result = await bridge.start(session, '55');
+            expect(result.success).to.equal(false);
+            expect(result.data.message).to.equal('Request not accepted');
+        });
+        it('should return false if start confirmation not ACCEPTED', async () => {
+            simulator.commands.startSuccess('LOC1', '55', 'ACCEPTED', 'REJECTED', true);
+            const result = await bridge.start(session, '55');
+            expect(result.success).to.equal(false);
+            expect(result.data.message).to.equal('Session start not accepted on charge point');
+        });
     });
 
     context('stop', () => {
-        it('should return true on successful stop', async () => {
-            simulator.commands.stopSuccess('LOC1', '44', true);
-            const result = await bridge.stop({
-                scId: session.scId,
-                evseId: session.evseId,
+        const session: IStopParameters = {
+                scId: '0x01',
+                evseId: 'evse-1',
                 sessionId: '44'
-            });
+        }
+        it('should return true if stop ACCEPTED', async () => {
+            simulator.commands.stopSuccess('LOC1', '44', 'ACCEPTED', 'ACCEPTED', true);
+            const result = await bridge.stop(session);
             expect(result.success).to.equal(true);
+        });
+        it('should return false if stop request not ACCEPTED', async () => {
+            simulator.commands.stopSuccess('LOC1', '44', 'REJECTED', '', true);
+            const result = await bridge.stop(session);
+            expect(result.success).to.equal(false);
+            expect(result.data.message).to.equal('Request not accepted');
+        });
+        it('should return false if stop confirmation not ACCEPTED', async () => {
+            simulator.commands.stopSuccess('LOC1', '44', 'ACCEPTED', 'REJECTED', true);
+            const result = await bridge.stop(session);
+            expect(result.success).to.equal(false);
+            expect(result.data.message).to.equal('Session stop not accepted on charge point');
         });
     });
 

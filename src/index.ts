@@ -39,7 +39,7 @@ export default class Bridge implements IBridge {
                 if (requested.result !== 'ACCEPTED') {
                     throw Error('Request not accepted');
                 }
-                this.ocpi.commands.started$.subscribe(started => {  
+                this.ocpi.commands.started$.subscribe(started => {
                     if (started.id === requestId) {
                         if (started.success === true) {
                             resolve({
@@ -49,7 +49,12 @@ export default class Bridge implements IBridge {
                                 }
                             });
                         } else {
-                            throw Error('Session start not accepted on charge point');
+                            resolve({
+                                success: false,
+                                data: {
+                                    message: 'Session start not accepted on charge point'
+                                }
+                            });
                         }
                     }
                 });
@@ -81,7 +86,12 @@ export default class Bridge implements IBridge {
                                 data: {}
                             });
                         } else {
-                            throw Error('Session stop not accepted on charge point');
+                            resolve({
+                                success: false,
+                                data: {
+                                    message: 'Session stop not accepted on charge point'
+                                }
+                            });
                         }
                     }
                 });
