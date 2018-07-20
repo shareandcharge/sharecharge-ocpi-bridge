@@ -65,8 +65,8 @@ export class Commands {
         }).reply(400, 'Bad request');
     }
 
-    public stopSuccess(session_id: string, req_id: string, requestResult: string, confirmResult: string, push = false): void {
-        const response_url = 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + req_id;
+    public stopSuccess(session_id: string, requestResult: string, confirmResult: string, push = false): void {
+        const response_url = 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + session_id;
         const req = this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
             response_url,
             session_id
@@ -93,16 +93,16 @@ export class Commands {
         }
     }
 
-    public stopOcpiError(session_id: string, req_id: string): void {
+    public stopOcpiError(session_id: string): void {
         this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
-            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + req_id,
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + session_id,
             session_id
         }).reply(200, ocpiError());
     }
 
-    public stopHttpError(session_id: string, req_id: string): void {
+    public stopHttpError(session_id: string): void {
         this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
-            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + req_id,
+            response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/STOP_SESSION/' + session_id,
             session_id
         }).reply(500, 'Internal server error');
     }

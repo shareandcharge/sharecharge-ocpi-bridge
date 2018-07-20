@@ -58,14 +58,14 @@ export class Commands {
         }
     }
 
-    public async stopSession(session_id: string, req_id: string): Promise<ICommandResponse> {
+    public async stopSession(session_id: string): Promise<ICommandResponse> {
         try {
             const result = await send({
                 method: 'POST',
                 uri: this.createUri('STOP_SESSION'),
                 headers: this.config.get('cpo.headers'),
                 body: <IStopSession>{
-                    response_url: this.createResponseUri('STOP_SESSION', req_id),
+                    response_url: this.createResponseUri('STOP_SESSION', session_id),
                     session_id
                 }
             });
@@ -80,9 +80,10 @@ export class Commands {
             try {
                 console.log(`POST /command/START_SESSION/${req.params.uid}`);
                 if (req.body.result === 'ACCEPTED') {
+                    console.log('next success');
                     this.started.next({ id: req.params.uid, success: true });
-
                 } else {
+                    console.log('next failure');
                     this.started.next({ id: req.params.uid, success: false });
                 }
                 res.send(<IResponse>{
@@ -101,8 +102,10 @@ export class Commands {
             try {
                 console.log(`POST /command/STOP_SESSION/${req.params.uid}`);
                 if (req.body.result === 'ACCEPTED') {
+                    console.log('next success');
                     this.stopped.next({ id: req.params.uid, success: true });
                 } else {
+                    console.log('next failure');
                     this.stopped.next({ id: req.params.uid, success: false });
                 }
                 res.send(<IResponse>{

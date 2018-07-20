@@ -368,8 +368,7 @@ describe('OCPI', () => {
 
     context('#commands', () => {
         const location = 'LOC1';
-        const id = 'abc';
-        const session = '12345';
+        const id = '123';
         context('CPO endpoints', () => {
             it('should send request to remotely start a session', async () => {
                 simulator.commands.startSuccess(location, id, 'ACCEPTED', '');
@@ -395,23 +394,23 @@ describe('OCPI', () => {
                 }
             });
             it('should send request to remotely stop a session', async () => {
-                simulator.commands.stopSuccess(session, id, 'ACCEPTED', '');
-                const result = await ocpi.commands.stopSession(session, id);
+                simulator.commands.stopSuccess(id, 'ACCEPTED', '');
+                const result = await ocpi.commands.stopSession(id);
                 expect(result.result).to.equal('ACCEPTED');
             });
             it('should throw if ocpi response not 1000', async () => {
-                simulator.commands.stopOcpiError(session, id);
+                simulator.commands.stopOcpiError(id);
                 try {
-                    await ocpi.commands.stopSession(session, id);
+                    await ocpi.commands.stopSession(id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/STOP_SESSION: 2000 - Generic client error');
                 }
             });
             it('should throw if http response not 2xx', async () => {
-                simulator.commands.stopHttpError(session, id);
+                simulator.commands.stopHttpError(id);
                 try {
-                    await ocpi.commands.stopSession(session, id);
+                    await ocpi.commands.stopSession(id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/STOP_SESSION: 500 - "Internal server error"');

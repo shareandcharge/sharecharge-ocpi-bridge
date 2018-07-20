@@ -8,6 +8,7 @@ import tariffs from './ocpi/tariffs';
 import locations from './ocpi/locations';
 import tokens from './ocpi/tokens';
 import sessions from './ocpi/sessions';
+import commands from './ocpi/commands';
 
 const config = new ConfigStore('ocpi');
 const port = process.env.PORT || '3005';
@@ -16,8 +17,15 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use('/ocpi/cpo/', versions(config, port));
-app.use('/ocpi/cpo/2.1.1/', modules(config, port), credentials(config), tariffs(config), locations(config), tokens(config), sessions(config));
-
+app.use('/ocpi/cpo/2.1.1/',
+    modules(config, port),
+    credentials(config),
+    tariffs(config),
+    locations(config),
+    tokens(config),
+    sessions(config),
+    commands(config)
+);
 
 app.listen(port, () => {
     console.log(`CPO server listening on port ${port}`);

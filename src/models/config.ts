@@ -39,7 +39,11 @@ export default class Config {
                     url: '',
                 },
                 {
-                    identifier: 'tariffs',
+                    identifier: 'session',
+                    url: ''
+                },
+                {
+                    identifier: 'commands',
                     url: ''
                 }
             ]

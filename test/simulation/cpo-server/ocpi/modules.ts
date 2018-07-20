@@ -33,6 +33,10 @@ export default (config: ConfigStore, port: string): Router => {
                   {
                     "identifier": "sessions",
                     "url": "http://localhost:3005/ocpi/cpo/2.1.1/sessions"
+                  },
+                  {
+                    "idnentifier": "commands",
+                    "url": "http://localhost:3005/ocpi/cpo/2.1.1/commands"
                   }
                 ]
             },

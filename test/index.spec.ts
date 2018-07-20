@@ -63,18 +63,18 @@ describe('Bridge Interface', () => {
                 sessionId: '44'
         }
         it('should return true if stop ACCEPTED', async () => {
-            simulator.commands.stopSuccess('LOC1', '44', 'ACCEPTED', 'ACCEPTED', true);
+            simulator.commands.stopSuccess('44', 'ACCEPTED', 'ACCEPTED', true);
             const result = await bridge.stop(session);
             expect(result.success).to.equal(true);
         });
         it('should return false if stop request not ACCEPTED', async () => {
-            simulator.commands.stopSuccess('LOC1', '44', 'REJECTED', '', true);
+            simulator.commands.stopSuccess('44', 'REJECTED', '', true);
             const result = await bridge.stop(session);
             expect(result.success).to.equal(false);
             expect(result.data.message).to.equal('Request not accepted');
         });
         it('should return false if stop confirmation not ACCEPTED', async () => {
-            simulator.commands.stopSuccess('LOC1', '44', 'ACCEPTED', 'REJECTED', true);
+            simulator.commands.stopSuccess('44', 'ACCEPTED', 'REJECTED', true);
             const result = await bridge.stop(session);
             expect(result.success).to.equal(false);
             expect(result.data.message).to.equal('Session stop not accepted on charge point');

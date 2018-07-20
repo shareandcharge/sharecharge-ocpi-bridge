@@ -73,13 +73,12 @@ export default class Bridge implements IBridge {
         return new Promise(async (resolve, reject) => {
             try {
                 const locationId = this.config.get(`locations.${parameters.scId}`);
-                const requestId = parameters.sessionId;
-                const requested = await this.ocpi.commands.stopSession(locationId, requestId);
+                const requested = await this.ocpi.commands.stopSession(parameters.sessionId);
                 if (requested.result !== 'ACCEPTED') {
                     throw Error('Request not accepted');
                 }
                 this.ocpi.commands.stopped$.subscribe(stopped => {
-                    if (stopped.id === requestId) {
+                    if (stopped.id === parameters.sessionId) {
                         if (stopped.success === true) {
                             resolve({
                                 success: true,
