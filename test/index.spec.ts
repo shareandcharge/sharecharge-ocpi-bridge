@@ -82,6 +82,26 @@ describe('Bridge Interface', () => {
         });
     });
 
+    context('#autoStop$', () => {
+        it('should notify core client of session auto stop', async () => {
+            setTimeout(async () => await request({
+                method: 'PUT',
+                uri: 'http://localhost:3001/ocpi/emsp/2.1.1/sessions/de/sc/101',
+                headers: {
+                    Authorization: 'Token ' + config.get('msp.credentials.token')
+                },
+                body: require('./config/session.json'),
+                json: true
+            }), 100);
+            return new Promise((resolve, reject) => {
+                bridge.autoStop$.subscribe(autoStop => {
+                    expect(autoStop.data.sessionId).to.equal('101');
+                    resolve();
+                });
+            });
+        });
+    });
+
     context('#cdr$', () => {
         it('should notify core client of async cdr receipt', async () => {
             setTimeout(async () => await request({

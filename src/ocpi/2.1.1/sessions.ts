@@ -54,13 +54,12 @@ export class Sessions {
                 });
             }
         });
-        this.router.put('/sessions', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
+        this.router.put('/sessions/:country/:party/:id', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
+            console.log(`PUT /session/${req.params.country}/${req.params.party}/${req.params.id}`);
             try {
                 const session: ISession = req.body;
                 writeFileSync(getConfigDir() + `sessions/${session.id}.json`, JSON.stringify(session));
-                if (session.status === 'COMPLETE') {
-                    this.push.emit('session', session);
-                }
+                this.push.emit('session', session);
                 res.send(<IResponse>{
                     status_code: 1000,
                     status_message: 'Success',

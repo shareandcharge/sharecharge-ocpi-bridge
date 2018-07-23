@@ -3,6 +3,7 @@ import * as ConfigStore from 'configstore';
 import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
 import { OCPI, push } from './services/ocpi';
 import OcpiCDR from './ocpi/2.1.1/interfaces/iCDR';
+import OcpiSession from './ocpi/2.1.1/interfaces/iSession';
 import Helpers from './helpers/helpers';
 
 export default class Bridge implements IBridge {
@@ -18,6 +19,24 @@ export default class Bridge implements IBridge {
     constructor(public config: ConfigStore = new ConfigStore('ocpi')) {
         this.ocpi = OCPI.getInstance(config);
         this.ocpi.startServer();
+        push.on('session', (session: OcpiSession) => {
+            console.log(session);
+            if (session.status === 'COMPLETE') {
+                const scId = Helpers.reverseLocationLookup(config, session.location.id);
+                this.autoStop.next({
+                    success: true,
+                    data: {
+                        session: {
+                            scId,
+                            evseId: '',
+                            tariffId: '0',
+                            tariffValue: '0'
+                        },
+                        sessionId: session.id
+                    }
+                })
+            }
+        });
         push.on('cdr', (cdr: OcpiCDR) => {
             const scId = Helpers.reverseLocationLookup(config, cdr.location.id);
             this.cdr.next({
