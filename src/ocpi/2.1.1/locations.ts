@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import * as ConfigStore from 'configstore';
-import { ILocation } from '@motionwerk/sharecharge-common/dist/common';
+import { ILocation } from '@motionwerk/sharecharge-common';
 import Helpers from '../../helpers/helpers';
 import send from '../../services/send';
 

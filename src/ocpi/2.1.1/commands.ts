@@ -1,10 +1,7 @@
 import { Router, Request, Response } from 'express';
 import * as ConfigStore from 'configstore';
 import * as urlJoin from 'url-join';
-import IToken from './interfaces/iToken';
-// import authenticate from '../../middleware/authenticate';
 import Helpers from '../../helpers/helpers';
-// import IResponse from './interfaces/iResponse';
 import send from '../../services/send';
 import IStartSession from './interfaces/iStartSession';
 import IStopSession from './interfaces/iStopSession';

@@ -1,12 +1,9 @@
-import { getConfigDir } from '@motionwerk/sharecharge-common/dist/config';
 import { Router, Request, Response } from 'express';
-import { readFileSync, writeFileSync } from 'fs';
 import * as ConfigStore from 'configstore';
 import * as urlJoin from 'url-join';
 import { URL } from 'url';
 import Helpers from '../../helpers/helpers';
 import send from '../../services/send';
-import ISession from './interfaces/iSession';
 import authenticate from '../../middleware/authenticate';
 import IResponse from './interfaces/iResponse';
 import { EventEmitter } from 'events';
@@ -46,6 +43,7 @@ export class CDRs {
                 const cdr: ICDR = req.body;
                 const endpoint = Helpers.getEndpointByIdentifier(this.config.get('msp.modules.endpoints'), 'cdrs');
                 const location = new URL(urlJoin(endpoint, cdr.id))
+                this.push.emit('cdr', cdr);
                 res
                     .set('Location', location.pathname)
                     .send(<IResponse>{

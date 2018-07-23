@@ -1,7 +1,6 @@
 import { getConfigDir } from '@motionwerk/sharecharge-common/dist/config';
 import { Router, Request, Response } from 'express';
 import { readFileSync, writeFileSync } from 'fs';
-import { Subject } from 'rxjs';
 import * as ConfigStore from 'configstore';
 import * as urlJoin from 'url-join';
 import Helpers from '../../helpers/helpers';
