@@ -10,6 +10,7 @@ import { Tokens } from '../ocpi/2.1.1/tokens';
 import { Sessions } from '../ocpi/2.1.1/sessions';
 import { Commands } from '../ocpi/2.1.1/commands';
 import { EventEmitter } from 'events';
+import { CDRs } from '../ocpi/2.1.1/cdrs';
 
 export const push = new EventEmitter();
 
@@ -25,7 +26,8 @@ export class OCPI {
                 public locations: Locations,
                 public tokens: Tokens,
                 public sessions: Sessions,
-                public commands: Commands) {
+                public commands: Commands,
+                public cdrs: CDRs) {
                     this.createRoutes();
     }
 
@@ -58,7 +60,8 @@ export class OCPI {
         const tokens = new Tokens(config);
         const sessions = new Sessions(config, push);
         const commands = new Commands(config, push);
-        OCPI.instance = new OCPI(config, versions, modules, credentials, tariffs, locations, tokens, sessions, commands);
+        const cdrs = new CDRs(config, push);
+        OCPI.instance = new OCPI(config, versions, modules, credentials, tariffs, locations, tokens, sessions, commands, cdrs);
         return OCPI.instance;
     }
 

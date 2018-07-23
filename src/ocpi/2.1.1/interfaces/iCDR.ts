@@ -1,15 +1,15 @@
-import { ILocation } from "@motionwerk/sharecharge-common/dist/common";
+import { ILocation, ITariff } from "@motionwerk/sharecharge-common/dist/common";
 
-export default interface ISession {
+export default interface ICDR {
     id: string;
-    start_datetime: Date,
-    end_datetime?: Date,
-    kwh: number;
+    start_date_time: Date;
+    stop_date_time: Date;
     auth_id: string;
     auth_method: 'AUTH_REQUEST' | 'WHITELIST';
-    location: ILocation,
-    meter_id?: string;
+    location: ILocation;
+    meter_id: string;
     currency: string;
+    tariffs: ITariff;
     charging_periods: {
         start_date_time: Date,
         dimensions: {
@@ -18,6 +18,9 @@ export default interface ISession {
         } 
     }[];
     total_cost: number;
-    status: 'ACTIVE' | 'COMPLETE' | 'INVALID' | 'PENDING';
+    total_energy: number;
+    total_time: number;
+    total_parking_time: number;
+    remark: string;
     last_updated: Date;
 }

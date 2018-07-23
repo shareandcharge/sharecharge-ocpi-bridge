@@ -10,7 +10,6 @@ import IStartSession from './interfaces/iStartSession';
 import IStopSession from './interfaces/iStopSession';
 import ICommandResponse from './interfaces/iCommandResponse';
 import authenticate from '../../middleware/authenticate';
-import { Subject } from 'rxjs';
 import IResponse from './interfaces/iResponse';
 import { EventEmitter } from 'events';
 

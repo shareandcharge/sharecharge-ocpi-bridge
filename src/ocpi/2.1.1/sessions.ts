@@ -26,7 +26,6 @@ export class Sessions {
     }
 
     public async get(): Promise<ISession[]> {
-        console.log(this.createUri());
         try {
             const result = await send({
                 method: 'GET', 

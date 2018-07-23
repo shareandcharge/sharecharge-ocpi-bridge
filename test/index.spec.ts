@@ -14,7 +14,7 @@ describe('Bridge Interface', () => {
     let session: ISession;
     let simulator: Simulator;
 
-    before(() => {
+    beforeEach(() => {
         bridge = new Bridge(config);
         simulator = new Simulator(config);
         session = {
@@ -25,7 +25,7 @@ describe('Bridge Interface', () => {
         }
     });
 
-    after(() => bridge.ocpi.stopServer());
+    afterEach(() => bridge.ocpi.stopServer());
 
     it('should get name of bridge', () => {
         expect(bridge.name).to.equal('OCPI');

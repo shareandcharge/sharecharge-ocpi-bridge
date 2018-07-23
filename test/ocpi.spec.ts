@@ -448,4 +448,39 @@ describe('OCPI', () => {
             });
         });
     });
+
+    context('#CDRs', () => {
+        context('CPO endpoints', () => {
+            it('should return charge detail record', async () => {
+                simulator.cdrs.success();
+                const result = await ocpi.cdrs.get();
+                expect(result[0].total_cost).to.equal(4.00);
+            });
+            it('should throw if OCPI response not 1000', async () => {
+                simulator.cdrs.ocpiError();
+                try {
+                    await ocpi.cdrs.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET cdrs: 2000 - Generic client error');
+                }
+            });
+            it('should throw if HTTP response not 2xx', async () => {
+                simulator.cdrs.httpError();
+                try {
+                    await ocpi.cdrs.get();
+                    expect.fail();
+                } catch (err) {
+                    expect(err.message).to.equal('GET cdrs: 500 - "Internal server error"');
+                }
+            });
+        });
+        context('eMSP endpoints', () => {
+            it('should return 1000 on successful CDR push', async () => {
+                // const result = await request({
+
+                // });
+            });
+        });
+    });
 });

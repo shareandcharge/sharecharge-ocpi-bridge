@@ -7,6 +7,7 @@ import { Locations } from './ocpi/locations';
 import { Tokens } from './ocpi/tokens';
 import { Sessions } from './ocpi/sessions';
 import { Commands } from './ocpi/commands';
+import { CDRs } from './ocpi/cdrs';
 
 export class Simulator {
 
@@ -18,6 +19,7 @@ export class Simulator {
     tokens: Tokens;
     sessions: Sessions;
     commands: Commands;
+    cdrs: CDRs;
 
     constructor(config: ConfigStore) {
         this.versions = new Versions(config);
@@ -28,6 +30,7 @@ export class Simulator {
         this.tokens = new Tokens(config);
         this.sessions = new Sessions(config);
         this.commands = new Commands(config);
+        this.cdrs = new CDRs(config);
     }
 
 }
