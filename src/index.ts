@@ -2,6 +2,8 @@ import { Subject } from 'rxjs';
 import * as ConfigStore from 'configstore';
 import { IBridge, IResult, ICDR, ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
 import { OCPI, push } from './services/ocpi';
+import OcpiCDR from './ocpi/2.1.1/interfaces/iCDR';
+import Helpers from './helpers/helpers';
 
 export default class Bridge implements IBridge {
 
@@ -16,6 +18,15 @@ export default class Bridge implements IBridge {
     constructor(public config: ConfigStore = new ConfigStore('ocpi')) {
         this.ocpi = OCPI.getInstance(config);
         this.ocpi.startServer();
+        push.on('cdr', (cdr: OcpiCDR) => {
+            const scId = Helpers.reverseLocationLookup(config, cdr.location.id);
+            this.cdr.next({
+                scId,
+                evseId: '',                                                                          // needs to be linked to original start parameters
+                price: cdr.total_cost * 100,
+                chargedUnits: (cdr.total_energy * 1000) || (Math.round(cdr.total_time / 60 / 60))    // needs to be based on tariff
+            });
+        });
     }
 
     public get name(): string {

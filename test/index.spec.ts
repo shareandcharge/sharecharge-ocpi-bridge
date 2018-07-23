@@ -4,6 +4,7 @@ import * as ConfigStore from 'configstore';
 import Bridge from '../src';
 import { ISession, IStopParameters } from '@motionwerk/sharecharge-common/dist/common';
 import { Simulator } from './simulation/cpo-responses/simulator';
+import * as request from 'request-promise-native';
 
 const config = new ConfigStore('ocpi-test');
 config.all = require('./config/config.json');
@@ -35,7 +36,7 @@ describe('Bridge Interface', () => {
         expect(await bridge.health()).to.equal(true);
     });
 
-    context('start', () => {
+    context('#start', () => {
         it('should return session id if start ACCEPTED', async () => {
             simulator.commands.startSuccess('LOC1', '55', 'ACCEPTED', 'ACCEPTED', true);
             const result = await bridge.start(session, '55');
@@ -56,7 +57,7 @@ describe('Bridge Interface', () => {
         });
     });
 
-    context('stop', () => {
+    context('#stop', () => {
         const session: IStopParameters = {
                 scId: '0x01',
                 evseId: 'evse-1',
@@ -80,5 +81,27 @@ describe('Bridge Interface', () => {
             expect(result.data.message).to.equal('Session stop not accepted on charge point');
         });
     });
+
+    context('#cdr$', () => {
+        it('should notify core client of async cdr receipt', async () => {
+            setTimeout(async () => await request({
+                method: 'POST',
+                uri: 'http://localhost:3001/ocpi/emsp/2.1.1/cdrs',
+                headers: {
+                    Authorization: 'Token ' + config.get('msp.credentials.token')
+                },
+                body: require('./config/cdr.json'),
+                json: true
+            }), 100);
+            return new Promise((resolve, reject) => {
+                bridge.cdr$.subscribe(cdr => {
+                    expect(cdr.price).to.equal(400);
+                    expect(cdr.scId).to.equal('0x01')
+                    resolve();
+                });
+            });
+        });
+    });
+
 
 });

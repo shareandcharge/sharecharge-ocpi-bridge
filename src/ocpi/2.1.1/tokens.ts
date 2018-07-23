@@ -8,7 +8,7 @@ import send from '../../services/send';
 export class Tokens {
 
     router: Router;
-    
+
     constructor(private config: ConfigStore) {
         this.router = Router();
     }
