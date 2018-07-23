@@ -3,6 +3,7 @@ import { Router, Request, Response } from 'express';
 import { readFileSync, writeFileSync } from 'fs';
 import * as ConfigStore from 'configstore';
 import * as urlJoin from 'url-join';
+import { URL } from 'url';
 import Helpers from '../../helpers/helpers';
 import send from '../../services/send';
 import ISession from './interfaces/iSession';
@@ -33,6 +34,32 @@ export class CDRs {
     }
 
     public serve(): Router {
+        this.router.get('/cdrs/:id', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
+            res.send(<IResponse>{
+                status_code: 3000,
+                status_message: 'CDRs not currently stored on the Share & Charge core client',
+                timestamp: new Date()
+            });
+        });
+        this.router.post('/cdrs', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
+            try {
+                const cdr: ICDR = req.body;
+                const endpoint = Helpers.getEndpointByIdentifier(this.config.get('msp.modules.endpoints'), 'cdrs');
+                const location = new URL(urlJoin(endpoint, cdr.id))
+                res
+                    .set('Location', location.pathname)
+                    .send(<IResponse>{
+                        status_code: 1000,
+                        timestamp: new Date()
+                    });
+            } catch (err) {
+                res.send(<IResponse>{
+                    status_code: 2000,
+                    status_message: err.message,
+                    timestamp: new Date()
+                })
+            }
+        });
         return this.router;
     }
 

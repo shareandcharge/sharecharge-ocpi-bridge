@@ -11,6 +11,8 @@ const config = new ConfigStore('ocpi-test');
 config.all = require('./config/config.json');
 config.set('msp.token', token);
 
+const cdr = require('./config/cdr');
+
 describe('OCPI', () => {
 
     let ocpi: OCPI;
@@ -476,10 +478,43 @@ describe('OCPI', () => {
             });
         });
         context('eMSP endpoints', () => {
-            it('should return 1000 on successful CDR push', async () => {
-                // const result = await request({
-
-                // });
+            it('should return 3000 on GET cdr', async () => {
+                const result = await request({
+                    method: 'GET',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/cdrs/12345',
+                    headers: {
+                        Authorization: 'Token ' + config.get('msp.credentials.token')
+                    },
+                    json: true
+                });
+                expect(result.status_code).to.equal(3000);
+                expect(result.status_message).to.equal('CDRs not currently stored on the Share & Charge core client');
+            });
+            it('should return 1000 and cdr url on successful CDR push', async () => {
+                const result = await request({
+                    method: 'POST',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/cdrs',
+                    headers: {
+                        Authorization: 'Token ' + config.get('msp.credentials.token')
+                    },
+                    body: cdr,
+                    json: true,
+                    resolveWithFullResponse: true
+                });
+                expect(result.body.status_code).to.equal(1000);
+                expect(result.headers.location).to.equal('/ocpi/emsp/2.1.1/cdrs/12345');
+            });
+            it('should return 2000 if no id in cdr', async () => {
+                const result = await request({
+                    method: 'POST',
+                    uri: 'http://localhost:3001/ocpi/emsp/2.1.1/cdrs',
+                    headers: {
+                        Authorization: 'Token ' + config.get('msp.credentials.token')
+                    },
+                    body: {},
+                    json: true
+                });
+                expect(result.status_code).to.equal(2000);
             });
         });
     });

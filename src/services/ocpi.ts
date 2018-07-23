@@ -37,7 +37,8 @@ export class OCPI {
             this.modules.serve(),
             this.credentials.serve(),
             this.sessions.serve(),
-            this.commands.serve()
+            this.commands.serve(),
+            this.cdrs.serve()
         );
     }
     
