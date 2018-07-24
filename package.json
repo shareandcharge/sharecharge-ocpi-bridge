@@ -1,6 +1,6 @@
 {
   "name": "@motionwerk/sharecharge-ocpi-bridge",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Open Charge Point Interface (OCPI) bridge for Share & Charge Core Client",
   "main": "dist/index.js",
   "directories": {

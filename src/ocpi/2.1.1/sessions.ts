@@ -58,7 +58,6 @@ export class Sessions {
             console.log(`PUT /session/${req.params.country}/${req.params.party}/${req.params.id}`);
             try {
                 const session: ISession = req.body;
-                writeFileSync(getConfigDir() + `sessions/${session.id}.json`, JSON.stringify(session));
                 this.push.emit('session', session);
                 res.send(<IResponse>{
                     status_code: 1000,
@@ -75,15 +74,12 @@ export class Sessions {
         });
         this.router.patch('/sessions/:country/:party/:id', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             try {
-                const filename = getConfigDir() + `sessions/${req.params.id}.json`;
-                const sessionOnDisk: ISession = JSON.parse(readFileSync(filename).toString());
-                Object.keys(req.body).forEach(key => {
-                    sessionOnDisk[key] = req.body[key];
-                });
-                if (sessionOnDisk.status === 'COMPLETE') {
-                    this.push.emit('session', sessionOnDisk);
-                }
-                writeFileSync(filename, sessionOnDisk);
+                // const filename = getConfigDir() + `sessions/${req.params.id}.json`;
+                // const sessionOnDisk: ISession = JSON.parse(readFileSync(filename).toString());
+                // Object.keys(req.body).forEach(key => {
+                //     sessionOnDisk[key] = req.body[key];
+                // });
+
                 res.send(<IResponse>{
                     status_code: 1000,
                     status_message: 'Success',

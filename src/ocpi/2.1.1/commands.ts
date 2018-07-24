@@ -9,6 +9,7 @@ import ICommandResponse from './interfaces/iCommandResponse';
 import authenticate from '../../middleware/authenticate';
 import IResponse from './interfaces/iResponse';
 import { EventEmitter } from 'events';
+import IToken from './interfaces/iToken';
 
 export class Commands {
 
@@ -30,7 +31,7 @@ export class Commands {
         );
     }
 
-    public async startSession(location_id: string, controller: string, req_id: string): Promise<ICommandResponse> {
+    public async startSession(location_id: string, token: IToken, req_id: string): Promise<ICommandResponse> {
         try {
             const result = await send({
                 method: 'POST',
@@ -38,7 +39,7 @@ export class Commands {
                 headers: this.config.get('cpo.headers'),
                 body: <IStartSession>{
                     response_url: this.createResponseUri('START_SESSION', req_id),
-                    token: this.config.get(`msp.tokens.${controller}`),
+                    token,
                     location_id
                     // evse_uid
                 }

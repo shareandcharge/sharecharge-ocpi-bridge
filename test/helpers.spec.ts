@@ -1,9 +1,12 @@
 import 'mocha';
 import { expect } from 'chai';
+import * as ConfigStore from 'configstore';
 import Helpers from '../src/helpers/helpers';
 import Config from '../src/models/config';
 
 const config: Config = require('./config/config.json');
+const configStore = new ConfigStore('ocpi-test');
+configStore.all = config;
 
 describe('Helpers', () => {
 
@@ -18,7 +21,7 @@ describe('Helpers', () => {
     });
 
     it('should generate token with unique eMA ID', () => {
-        const token = Helpers.generateToken(config.msp.credentials);
+        const token = Helpers.generateToken(configStore, '0x123');
         expect(/\w{2}-[A-Za-z0-9]{3}-C[A-Z0-9]{8}/.test(token.auth_id)).to.equal(true);
     });
 

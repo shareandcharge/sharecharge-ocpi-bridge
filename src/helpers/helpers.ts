@@ -2,8 +2,11 @@ import { v4 } from 'uuid';
 import IModules from '../ocpi/2.1.1/interfaces/iModules';
 import IVersions from '../ocpi/2.1.1/interfaces/IVersions';
 import * as ConfigStore from 'configstore';
+import { join as pathJoin } from 'path';
 import IToken from '../ocpi/2.1.1/interfaces/iToken';
-import ICredentials from '../ocpi/2.1.1/interfaces/iCredentials';
+import { ISession, getConfigDir, prepareConfigLocation } from '@motionwerk/sharecharge-common/dist/common';
+import { writeFileSync, readFileSync, mkdirSync } from 'fs';
+import ICDR from '../ocpi/2.1.1/interfaces/iCDR';
 
 export default class Helpers {
 
@@ -31,12 +34,21 @@ export default class Helpers {
         }
     }
 
-    static generateToken(credentials: ICredentials): IToken {
-        const country = credentials.country_code;
-        const party = credentials.party_id;
+    static reverseAuthLookup(config: ConfigStore, auth_id: string): string {
+        const tokens: { [key: string]: IToken } = config.get('msp.tokens');
+        for (const [controller, token] of Object.entries(tokens)) {
+            if (token.auth_id === auth_id) {
+                return controller;
+            }
+        }
+    }
+
+    static generateToken(config: ConfigStore, controller: string): IToken {
+        const country = config.get('msp.credentials.country_code');
+        const party = config.get('msp.credentials.party_id');
         const eMA = Math.random().toString(36).substr(2, 8).toUpperCase();
         const auth_id = `${country}-${party}-C${eMA}`;
-        return {
+        const token: IToken = {
             uid: v4(),
             type: 'OTHER',
             auth_id,
@@ -45,6 +57,23 @@ export default class Helpers {
             whitelist: 'ALWAYS',
             last_updated: new Date()
         }
+        config.set(`msp.tokens.${controller}`, token);
+        return token;
+    }
+
+    static writeSession(auth_id: string, session: ISession) {
+        try {
+            const path = pathJoin(getConfigDir(), 'sessions', `${auth_id}.json`);
+            writeFileSync(path, JSON.stringify(session, null, 2));
+        } catch (err) {
+            prepareConfigLocation();
+            this.writeSession(auth_id, session);
+        }
+    }
+
+    static readSession(auth_id: string): ISession {
+        const path = pathJoin(getConfigDir(), 'sessions', `${auth_id}.json`);
+        return JSON.parse(readFileSync(path).toString());
     }
 
 }
