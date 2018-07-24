@@ -1,6 +1,7 @@
 import { Arguments } from "yargs";
 import { OCPI, push } from '../../src/services/ocpi';
 import * as ConfigStore from 'configstore';
+import Helpers from "../../src/helpers/helpers";
 
 const config = new ConfigStore('ocpi');
 const ocpi = OCPI.getInstance(config);
@@ -10,7 +11,8 @@ export default class CmdService {
 
     static async start(argv: Arguments): Promise<void> {
         const requestId = Math.round(Math.random() * 1000000).toString();
-        const requested = await ocpi.commands.startSession(argv.id, requestId);
+        const token = Helpers.generateToken(config, '0x0');
+        const requested = await ocpi.commands.startSession(argv.id, token, requestId);
         if (requested.result !== 'ACCEPTED') {
             console.log('Error requesting session start:', requested.result);
             process.exit();
