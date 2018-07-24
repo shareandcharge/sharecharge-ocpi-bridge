@@ -21,6 +21,7 @@ describe('Bridge Interface', () => {
         session = {
             scId: '0x01',
             evseId: 'de-123',
+            controller: '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe',
             tariffId: '0',
             tariffValue: '20'
         }
@@ -38,19 +39,19 @@ describe('Bridge Interface', () => {
 
     context('#start', () => {
         it('should return session id if start ACCEPTED', async () => {
-            simulator.commands.startSuccess('LOC1', '55', 'ACCEPTED', 'ACCEPTED', true);
+            simulator.commands.startSuccess('LOC1', session.controller, '55', 'ACCEPTED', 'ACCEPTED', true);
             const result = await bridge.start(session, '55');
             expect(result.success).to.equal(true);
             expect(result.data.sessionId).to.equal('55');
         });
         it('should return false if start request not ACCEPTED', async () => {
-            simulator.commands.startSuccess('LOC1', '55', 'REJECTED', '', true);
+            simulator.commands.startSuccess('LOC1', session.controller, '55', 'REJECTED', '', true);
             const result = await bridge.start(session, '55');
             expect(result.success).to.equal(false);
             expect(result.data.message).to.equal('Request not accepted');
         });
         it('should return false if start confirmation not ACCEPTED', async () => {
-            simulator.commands.startSuccess('LOC1', '55', 'ACCEPTED', 'REJECTED', true);
+            simulator.commands.startSuccess('LOC1', session.controller, '55', 'ACCEPTED', 'REJECTED', true);
             const result = await bridge.start(session, '55');
             expect(result.success).to.equal(false);
             expect(result.data.message).to.equal('Session start not accepted on charge point');
@@ -61,6 +62,7 @@ describe('Bridge Interface', () => {
         const session: IStopParameters = {
                 scId: '0x01',
                 evseId: 'evse-1',
+                controller: '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe',
                 sessionId: '44'
         }
         it('should return true if stop ACCEPTED', async () => {
@@ -92,7 +94,7 @@ describe('Bridge Interface', () => {
                 },
                 body: require('./config/session.json'),
                 json: true
-            }), 100);
+            }), 300);
             return new Promise((resolve, reject) => {
                 bridge.autoStop$.subscribe(autoStop => {
                     expect(autoStop.data.sessionId).to.equal('101');
@@ -122,6 +124,5 @@ describe('Bridge Interface', () => {
             });
         });
     });
-
 
 });

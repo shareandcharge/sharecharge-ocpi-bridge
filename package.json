@@ -38,7 +38,7 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
-    "@motionwerk/sharecharge-common": "^1.14.0",
+    "@motionwerk/sharecharge-common": "^1.15.0",
     "@types/configstore": "^2.1.1",
     "body-parser": "^1.18.3",
     "configstore": "^3.1.2",

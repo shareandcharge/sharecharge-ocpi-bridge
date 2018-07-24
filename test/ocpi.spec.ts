@@ -4,12 +4,10 @@ import * as request from 'request-promise-native';
 import * as ConfigStore from 'configstore';
 import { OCPI } from '../src/services/ocpi';
 import { Simulator } from './simulation/cpo-responses/simulator';
-import IToken from '../src/ocpi/2.1.1/interfaces/iToken';
-import { token } from './config/token';
+import Helpers from '../src/helpers/helpers';
 
 const config = new ConfigStore('ocpi-test');
 config.all = require('./config/config.json');
-config.set('msp.token', token);
 
 const cdr = require('./config/cdr');
 
@@ -302,11 +300,13 @@ describe('OCPI', () => {
                 }
             });
             it('should return 1000 if updated token cache successfully', async () => {
+                const token = Helpers.generateToken(config.get('msp.credentials'));
                 simulator.tokens.putSuccess(token);
                 const result = await ocpi.tokens.put(token);
                 expect(result).to.equal(undefined);
             });
             it('should throw if OCPI response not 1000', async () => {
+                const token = Helpers.generateToken(config.get('msp.credentials'));
                 simulator.tokens.putOcpiError(token);
                 try {
                     await ocpi.tokens.put(token);
@@ -316,6 +316,7 @@ describe('OCPI', () => {
                 }
             });
             it('should throw if HTTP response not 2xx', async () => {
+                const token = Helpers.generateToken(config.get('msp.credentials'));
                 simulator.tokens.putHttpError(token);
                 try {
                     await ocpi.tokens.put(token);
@@ -370,26 +371,27 @@ describe('OCPI', () => {
 
     context('#commands', () => {
         const location = 'LOC1';
+        const controller = '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe';
         const id = '123';
         context('CPO endpoints', () => {
             it('should send request to remotely start a session', async () => {
-                simulator.commands.startSuccess(location, id, 'ACCEPTED', '');
-                const result = await ocpi.commands.startSession(location, id);
+                simulator.commands.startSuccess(location, controller, id, 'ACCEPTED', '');
+                const result = await ocpi.commands.startSession(location, controller, id);
                 expect(result.result).to.equal('ACCEPTED');
             });
             it('should throw if ocpi response not 1000', async () => {
-                simulator.commands.startOcpiError(location, id);
+                simulator.commands.startOcpiError(location, controller, id);
                 try {
-                    await ocpi.commands.startSession(location, id);
+                    await ocpi.commands.startSession(location, controller, id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/START_SESSION: 2000 - Generic client error');
                 }
             });
             it('should throw if http response not 2xx', async () => {
-                simulator.commands.startHttpError(location, id);
+                simulator.commands.startHttpError(location, controller, id);
                 try {
-                    await ocpi.commands.startSession(location, id);
+                    await ocpi.commands.startSession(location, controller, id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/START_SESSION: 400 - "Bad request"');

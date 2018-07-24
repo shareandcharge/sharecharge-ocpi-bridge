@@ -41,7 +41,7 @@
       "credentials": {
         "url": "http://localhost:3001/ocpi/emsp/versions/",
         "token": "52ce2786-6f77-4f6b-9f72-2cfab5ddff33",
-        "party_id": "sc",
+        "party_id": "shc",
         "country_code": "de",
         "business_details": {
           "name": "Share&Charge"
@@ -74,7 +74,17 @@
           }
         ]
       },
-      "token": {}
+      "tokens": {
+        "0x0D0707963952f2fBA59dD06f2b425ace40b492Fe": {
+          "uid": "123",
+          "type": "OTHER",
+          "auth_id": "123",
+          "issuer": "Share&Charge",
+          "valid": true,
+          "whitelist": "ALWAYS",
+          "last_updated": "2015-06-29T22:39:09Z"
+        }
+      }
     },
     "locations": {
       "0x01": "LOC1"

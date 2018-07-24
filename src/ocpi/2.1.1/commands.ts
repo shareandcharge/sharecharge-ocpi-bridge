@@ -30,7 +30,7 @@ export class Commands {
         );
     }
 
-    public async startSession(location_id: string, req_id: string): Promise<ICommandResponse> {
+    public async startSession(location_id: string, controller: string, req_id: string): Promise<ICommandResponse> {
         try {
             const result = await send({
                 method: 'POST',
@@ -38,7 +38,7 @@ export class Commands {
                 headers: this.config.get('cpo.headers'),
                 body: <IStartSession>{
                     response_url: this.createResponseUri('START_SESSION', req_id),
-                    token: this.config.get('msp.token'),
+                    token: this.config.get(`msp.tokens.${controller}`),
                     location_id
                     // evse_uid
                 }

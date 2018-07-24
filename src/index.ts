@@ -20,7 +20,6 @@ export default class Bridge implements IBridge {
         this.ocpi = OCPI.getInstance(config);
         this.ocpi.startServer();
         push.on('session', (session: OcpiSession) => {
-            console.log(session);
             if (session.status === 'COMPLETE') {
                 const scId = Helpers.reverseLocationLookup(config, session.location.id);
                 this.autoStop.next({
@@ -29,6 +28,7 @@ export default class Bridge implements IBridge {
                         session: {
                             scId,
                             evseId: '',
+                            controller: '',
                             tariffId: '0',
                             tariffValue: '0'
                         },
@@ -65,7 +65,7 @@ export default class Bridge implements IBridge {
             try {
                 const locationId = this.config.get(`locations.${parameters.scId}`);
                 const requestId = id || Math.round(Math.random() * 100000).toString();
-                const requested = await this.ocpi.commands.startSession(locationId, requestId);
+                const requested = await this.ocpi.commands.startSession(locationId, parameters.controller, requestId);
                 if (requested.result !== 'ACCEPTED') {
                     throw Error('Request not accepted');
                 }

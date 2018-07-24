@@ -17,14 +17,13 @@ export class Commands {
             reqheaders: config.get('cpo.headers')
         });
         this.endpoint = `/commands/`;
-        this.token = config.get('msp.token');
     }
 
-    public startSuccess(location_id: string, req_id: string, requestResult: string, confirmResult: string, push = false): void {
+    public startSuccess(location_id: string, controller: string, req_id: string, requestResult: string, confirmResult: string, push = false): void {
         const response_url = 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id;
         const req = this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
             response_url,
-            token: this.token,
+            token: this.config.get(`msp.tokens.${controller}`),
             location_id
         }).reply(200, ocpiSuccess({ result: requestResult }));
         if (push) {
@@ -49,18 +48,18 @@ export class Commands {
         }
     }
 
-    public startOcpiError(location_id: string, req_id: string): void {
+    public startOcpiError(location_id: string, controller: string, req_id: string): void {
         this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
             response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id,
-            token: this.token,
+            token: this.config.get(`msp.tokens.${controller}`),
             location_id
         }).reply(200, ocpiError());
     }
 
-    public startHttpError(location_id: string, req_id: string): void {
+    public startHttpError(location_id: string, controller: string, req_id: string): void {
         this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
             response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id,
-            token: this.token,
+            token: this.config.get(`msp.tokens.${controller}`),
             location_id
         }).reply(400, 'Bad request');
     }

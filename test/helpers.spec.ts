@@ -17,4 +17,9 @@ describe('Helpers', () => {
         expect(url).to.equal('http://localhost:3001/ocpi/emsp/2.1.1/');
     });
 
+    it('should generate token with unique eMA ID', () => {
+        const token = Helpers.generateToken(config.msp.credentials);
+        expect(/\w{2}-[A-Za-z0-9]{3}-C[A-Z0-9]{8}/.test(token.auth_id)).to.equal(true);
+    });
+
 });
