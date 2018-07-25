@@ -41,8 +41,10 @@ export default class Bridge implements IBridge {
             } else {
                 // write the id once we get it so that the session can be stopped
                 const scSession = Helpers.readSession(ocpiSession.auth_id);
-                scSession.sessionId = ocpiSession.id;
-                Helpers.writeSession(ocpiSession.auth_id, scSession);
+                if (!scSession.sessionId) {
+                    scSession.sessionId = ocpiSession.id;
+                    Helpers.writeSession(ocpiSession.auth_id, scSession);
+                }
             }
         });
         push.on('cdr', (cdr: OcpiCDR) => {
@@ -88,7 +90,7 @@ export default class Bridge implements IBridge {
                             resolve({
                                 success: true,
                                 data: {
-                                    sessionId: requestId
+                                    sessionId: requestId // 0x0 instead?
                                 }
                             });
                         } else {

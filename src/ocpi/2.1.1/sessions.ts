@@ -73,13 +73,11 @@ export class Sessions {
             }
         });
         this.router.patch('/sessions/:country/:party/:id', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
+            console.log(`PATCH /session/${req.params.country}/${req.params.party}/${req.params.id}`);
             try {
-                // const filename = getConfigDir() + `sessions/${req.params.id}.json`;
-                // const sessionOnDisk: ISession = JSON.parse(readFileSync(filename).toString());
-                // Object.keys(req.body).forEach(key => {
-                //     sessionOnDisk[key] = req.body[key];
-                // });
-
+                const sessions = await this.get();
+                const session = sessions.filter(s => s.id === req.params.id)[0];
+                this.push.emit('session', session);
                 res.send(<IResponse>{
                     status_code: 1000,
                     status_message: 'Success',
