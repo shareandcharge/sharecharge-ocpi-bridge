@@ -88,5 +88,6 @@
     },
     "locations": {
       "0x01": "LOC1"
-    }
+    },
+    "pullInterval": 60
   }

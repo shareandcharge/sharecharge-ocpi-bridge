@@ -119,7 +119,6 @@ describe('Bridge Interface', () => {
             }), 100);
             return new Promise((resolve, reject) => {
                 bridge.cdr$.subscribe(cdr => {
-                    console.log('cdr:', cdr);
                     expect(cdr.price).to.equal(400);
                     expect(cdr.scId).to.equal('0x01')
                     resolve();

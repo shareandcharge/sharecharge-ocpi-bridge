@@ -6,6 +6,7 @@ import OcpiCDR from './ocpi/2.1.1/interfaces/iCDR';
 import OcpiSession from './ocpi/2.1.1/interfaces/iSession';
 import Helpers from './helpers/helpers';
 import IToken from './ocpi/2.1.1/interfaces/iToken';
+import SessionManager from './services/session.manager';
 
 export default class Bridge implements IBridge {
 
@@ -44,6 +45,8 @@ export default class Bridge implements IBridge {
                 if (!scSession.sessionId) {
                     scSession.sessionId = ocpiSession.id;
                     Helpers.writeSession(ocpiSession.auth_id, scSession);
+                    const manager = new SessionManager(scSession, this.ocpi);
+                    manager.start(this.config.get('pullInterval'));
                 }
             }
         });
@@ -87,6 +90,7 @@ export default class Bridge implements IBridge {
                     if (data.id === requestId) {
                         if (data.success === true) {
                             Helpers.writeSession(token.auth_id, parameters);
+                            // poll for status updates 
                             resolve({
                                 success: true,
                                 data: {

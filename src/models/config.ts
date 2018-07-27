@@ -45,18 +45,27 @@ export default class Config {
                 {
                     identifier: 'commands',
                     url: ''
+                },
+                {
+                    identifier: 'cdrs',
+                    url: ''
                 }
             ]
         },
         driver_token: ''
     }
 
+    public locations = {};
+    public pullInterval = 60;
+
     static get default(): Config {
         const config = new Config();
         return {
             version: config.version,
             cpo: config.cpo,
-            msp: config.msp
+            msp: config.msp,
+            locations: config.locations,
+            pullInterval: config.pullInterval,
         }
     }
 }
