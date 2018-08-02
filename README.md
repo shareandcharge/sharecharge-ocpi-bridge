@@ -31,7 +31,7 @@ sc-cli config set bridgePath @motionwerk/sharecharge-ocpi-bridge
 
 Run the Core Client:
 ```
-sc-cc
+sc-cc start
 ```
 
 
@@ -81,6 +81,12 @@ This will start listening on port 3001:
 curl http://localhost:3001/ocpi/emsp/versions
 ```
 
-### OCPI Coverage
+### Troubleshooting
 
-*TODO*
+1. Permission denied when trying to access `.config/configstore/ocpi.json`
+
+This occurs when using sudo on a global npm/yarn install. Change the permissions of the config directory as follows:
+```
+sudo chmod 777 .config
+sudo chmod 777 .config/configstore/
+```
