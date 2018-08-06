@@ -4,15 +4,19 @@ import * as ConfigStore from 'configstore';
 import Helpers from "../../src/helpers/helpers";
 
 const config = new ConfigStore('ocpi');
-const ocpi = OCPI.getInstance(config);
-ocpi.startServer();
 
 export default class CmdService {
+
+    static get ocpi(): OCPI {
+        const ocpi = OCPI.getInstance(config);
+        ocpi.startServer();
+        return ocpi;
+    }
 
     static async start(argv: Arguments): Promise<void> {
         const requestId = Math.round(Math.random() * 1000000).toString();
         const token = Helpers.generateToken(config, '0x0');
-        const requested = await ocpi.commands.startSession(argv.id, token, requestId);
+        const requested = await CmdService.ocpi.commands.startSession(argv.id, token, requestId);
         if (requested.result !== 'ACCEPTED') {
             console.log('Error requesting session start:', requested.result);
             process.exit();
@@ -22,13 +26,13 @@ export default class CmdService {
         push.on('start', data => {
             if (data.id === requestId) {
                 console.log('Got start push event:', JSON.stringify(data, null, 2));
-                ocpi.stopServer();
+                CmdService.ocpi.stopServer();
             }
         });
     }
 
     static async stop(argv: Arguments): Promise<void> {
-        const requested = await ocpi.commands.stopSession(argv.id);
+        const requested = await CmdService.ocpi.commands.stopSession(argv.id);
         if (requested.result !== 'ACCEPTED') {
             console.log('Error requesting session stop:', JSON.stringify(requested, null, 2));
         } else {
@@ -37,7 +41,7 @@ export default class CmdService {
         push.on('stop', data => {
             if (data.id === argv.id) {
                 console.log('Got stop push event:', JSON.stringify(data, null, 2));
-                ocpi.stopServer();
+                CmdService.ocpi.stopServer();
             }
         });
     }

@@ -5,12 +5,16 @@ import { OCPI } from "../../src/services/ocpi";
 import IToken from "../../src/ocpi/2.1.1/interfaces/iToken";
 
 const config = new ConfigStore('ocpi');
-const ocpi = OCPI.getInstance(config);
 
 export default class TokensService {
+    
+    static get ocpi(): OCPI {
+        const ocpi = OCPI.getInstance(config);
+        return ocpi;
+    }
 
     static async get(args: Arguments): Promise<void> {
-        const result = await ocpi.tokens.get(args.uid);
+        const result = await TokensService.ocpi.tokens.get(args.uid);
         console.log(JSON.stringify(result, null, 2));
     }
 
@@ -33,7 +37,7 @@ export default class TokensService {
                 message: 'Is token valid?'
             },
         ]);
-        await ocpi.tokens.put(<IToken>{
+        await TokensService.ocpi.tokens.put(<IToken>{
             uid: token.uid,
             type: 'OTHER',
             auth_id: token.auth_id,

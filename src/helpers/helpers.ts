@@ -4,9 +4,8 @@ import IVersions from '../ocpi/2.1.1/interfaces/IVersions';
 import * as ConfigStore from 'configstore';
 import { join as pathJoin } from 'path';
 import IToken from '../ocpi/2.1.1/interfaces/iToken';
-import { ISession, getConfigDir, prepareConfigLocation } from '@motionwerk/sharecharge-common/dist/common';
-import { writeFileSync, readFileSync, mkdirSync } from 'fs';
-import ICDR from '../ocpi/2.1.1/interfaces/iCDR';
+import { ISession, getConfigDir, prepareConfigLocation } from '@motionwerk/sharecharge-common';
+import { writeFileSync, readFileSync } from 'fs';
 
 export default class Helpers {
 

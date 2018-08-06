@@ -96,9 +96,7 @@ export default async () => {
             console.log('Saved configuration');
         } catch (err) {
             console.log(`Error updating configuration: ${err.message}`);
-            process.exit();       
         }        
-    } else {
-        process.exit();
     }
+    process.exit();
 }
