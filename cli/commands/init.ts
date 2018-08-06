@@ -50,7 +50,7 @@ export default async () => {
         endpoints: Config.default.msp.modules.endpoints.map(endpoint => {
             return {
                 identifier: endpoint.identifier,
-                url: `${msp.url}/ocpi/emsp/${Config.default.version}/${endpoint.identifier}`
+                url: resolveUrl(msp.url, `/ocpi/emsp/${Config.default.version}/${endpoint.identifier}`)
             }
         })
     };
