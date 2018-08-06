@@ -70,6 +70,10 @@ jobs:
           name: tsc
           command: ./node_modules/.bin/tsc
 
+      - run:
+          name: copy package.json to dist
+          command: cp package.json dist/
+
       - persist_to_workspace:
           root: ~/bridge
           paths: .
