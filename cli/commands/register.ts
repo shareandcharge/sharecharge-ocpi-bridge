@@ -19,8 +19,8 @@ export default async (args: Arguments) => {
     try {
 
         // 1. Request GET versions (using TOKEN_A as authentication) and store mutual version's modules endpoint
-        
-        console.log('Requestion CPO OCPI versions');
+
+        console.log('Requesting CPO OCPI versions');
         const versions = await ocpi.versions.get();
         const modulesUrl = Helpers.getUrlByVersion(versions, config.get('version'));
         if (modulesUrl) {
