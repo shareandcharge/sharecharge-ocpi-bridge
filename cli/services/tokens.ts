@@ -30,7 +30,6 @@ export default class TokensService {
         ]);
         const token = Helpers.generateToken(config, answer.controller);
         await TokensService.ocpi.tokens.put(token);
-        config.set(`msp.token.${answer.controller}`, token);
         console.log(`New driver access token: ${token.uid}`);
     }
 

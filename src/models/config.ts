@@ -1,6 +1,7 @@
 import * as ConfigStore from 'configstore';
 import IModules from "../ocpi/2.1.1/interfaces/iModules";
 import IVersions from "../ocpi/2.1.1/interfaces/IVersions";
+import IToken from '../ocpi/2.1.1/interfaces/iToken';
 
 export default class Config {
 
@@ -52,7 +53,7 @@ export default class Config {
                 }
             ]
         },
-        driver_token: ''
+        tokens: <{[driver: string]: IToken}>{}
     }
 
     public locations = {};
