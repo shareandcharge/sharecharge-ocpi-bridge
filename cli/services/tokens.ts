@@ -3,6 +3,7 @@ import { Answers, prompt } from 'inquirer';
 import * as ConfigStore from 'configstore';
 import { OCPI } from "../../src/services/ocpi";
 import IToken from "../../src/ocpi/2.1.1/interfaces/iToken";
+import Helpers from "../../src/helpers/helpers";
 
 const config = new ConfigStore('ocpi');
 
@@ -20,34 +21,17 @@ export default class TokensService {
 
     static async put(): Promise<void> {
         console.log('Enter token details:');
-        const token: Answers = await prompt([
+        const answer: Answers = await prompt([
             {
                 type: 'input',
-                name: 'uid',
-                message: 'UID:',
-            },
-            {
-                type: 'input',
-                name: 'auth_id',
-                message: 'Auth ID (driver eMA ID):'
-            },
-            {
-                type: 'confirm',
-                name: 'valid',
-                message: 'Is token valid?'
-            },
+                name: 'controller',
+                message: 'Enter driver address:',
+            }
         ]);
-        await TokensService.ocpi.tokens.put(<IToken>{
-            uid: token.uid,
-            type: 'OTHER',
-            auth_id: token.auth_id,
-            issuer: config.get('msp.credentials.business_details.name'),
-            valid: token.valid,
-            whitelist: 'ALWAYS',
-            last_updated: new Date()
-        });
-        config.set('msp.token', token);
-        console.log(`New default driver access token: ${token.uid}`);
+        const token = Helpers.generateToken(config, answer.controller);
+        await TokensService.ocpi.tokens.put(token);
+        config.set(`msp.token.${answer.controller}`, token);
+        console.log(`New driver access token: ${token.uid}`);
     }
 
 }
