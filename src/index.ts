@@ -83,7 +83,7 @@ export default class Bridge implements IBridge {
                 const controller = parameters.controller;
                 let token: IToken = this.config.get(`msp.tokens.${controller}`);
                 if (!token) {
-                    token = Helpers.generateToken(this.config.get('msp.credentials'), controller);
+                    token = Helpers.generateToken(this.config, controller);
                     await this.ocpi.tokens.put(token);
                 }
                 const requested = await this.ocpi.commands.startSession(locationId, token, requestId);
