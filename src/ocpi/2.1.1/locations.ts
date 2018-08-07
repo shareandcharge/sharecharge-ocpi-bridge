@@ -12,11 +12,11 @@ export class Locations {
         this.router = Router();
     }
 
-    public async get(locationId: string): Promise<ILocation> {
+    public async get(locationId?: string): Promise<ILocation> {
         try {
             const result = await send({
                 method: 'GET', 
-                uri: Helpers.getEndpointByIdentifier(this.config.get('cpo.endpoints'), 'locations') + '/' + locationId,
+                uri: Helpers.getEndpointByIdentifier(this.config.get('cpo.endpoints'), 'locations') + '/' + (locationId || ''),
                 headers: this.config.get('cpo.headers'),
             });
             return result;
