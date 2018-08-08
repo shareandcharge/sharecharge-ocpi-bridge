@@ -19,12 +19,13 @@ export class Commands {
         this.endpoint = `/commands/`;
     }
 
-    public startSuccess(location_id: string, token: IToken, req_id: string, requestResult: string, confirmResult: string, push = false): void {
+    public startSuccess(location_id: string, evse_uid: string, token: IToken, req_id: string, requestResult: string, confirmResult: string, push = false): void {
         const response_url = 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id;
         const req = this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
             response_url,
             token,
-            location_id
+            location_id,
+            evse_uid
         }).reply(200, ocpiSuccess({ result: requestResult }));
         if (push) {
             const interval = setInterval(async () => {
@@ -48,19 +49,21 @@ export class Commands {
         }
     }
 
-    public startOcpiError(location_id: string, token: IToken, req_id: string): void {
+    public startOcpiError(location_id: string, evse_uid: string, token: IToken, req_id: string): void {
         this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
             response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id,
             token,
-            location_id
+            location_id,
+            evse_uid
         }).reply(200, ocpiError());
     }
 
-    public startHttpError(location_id: string, token: IToken, req_id: string): void {
+    public startHttpError(location_id: string, evse_uid: string, token: IToken, req_id: string): void {
         this.host.post(this.endpoint + 'START_SESSION', <IStartSession>{
             response_url: 'http://localhost:3001/ocpi/emsp/2.1.1/commands/START_SESSION/' + req_id,
             token,
-            location_id
+            location_id,
+            evse_uid
         }).reply(400, 'Bad request');
     }
 

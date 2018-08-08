@@ -371,28 +371,29 @@ describe('OCPI', () => {
 
     context('#commands', () => {
         const location = 'LOC1';
+        const evse = '12345';
         const controller = '0x0D0707963952f2fBA59dD06f2b425ace40b492Fe';
         const token = config.get(`msp.tokens.${controller}`);
         const id = '123';
         context('CPO endpoints', () => {
             it('should send request to remotely start a session', async () => {
-                simulator.commands.startSuccess(location, token, id, 'ACCEPTED', '');
-                const result = await ocpi.commands.startSession(location, token, id);
+                simulator.commands.startSuccess(location, evse, token, id, 'ACCEPTED', '');
+                const result = await ocpi.commands.startSession(location, evse, token, id);
                 expect(result.result).to.equal('ACCEPTED');
             });
             it('should throw if ocpi response not 1000', async () => {
-                simulator.commands.startOcpiError(location, token, id);
+                simulator.commands.startOcpiError(location, evse, token, id);
                 try {
-                    await ocpi.commands.startSession(location, token, id);
+                    await ocpi.commands.startSession(location, evse, token, id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/START_SESSION: 2000 - Generic client error');
                 }
             });
             it('should throw if http response not 2xx', async () => {
-                simulator.commands.startHttpError(location, token, id);
+                simulator.commands.startHttpError(location, evse, token, id);
                 try {
-                    await ocpi.commands.startSession(location, token, id);
+                    await ocpi.commands.startSession(location, evse, token, id);
                     expect.fail();
                 } catch (err) {
                     expect(err.message).to.equal('POST commands/START_SESSION: 400 - "Bad request"');

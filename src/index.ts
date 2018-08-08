@@ -79,6 +79,7 @@ export default class Bridge implements IBridge {
         return new Promise(async (resolve, reject) => {
             try {
                 const locationId = this.config.get(`locations.${parameters.scId}`);
+                const evseId = parameters.evseId;
                 const requestId = id || Math.round(Math.random() * 100000).toString();
                 const controller = parameters.controller;
                 let token: IToken = this.config.get(`msp.tokens.${controller}`);
@@ -86,7 +87,7 @@ export default class Bridge implements IBridge {
                     token = Helpers.generateToken(this.config, controller);
                     await this.ocpi.tokens.put(token);
                 }
-                const requested = await this.ocpi.commands.startSession(locationId, token, requestId);
+                const requested = await this.ocpi.commands.startSession(locationId, evseId, token, requestId);
                 if (requested.result !== 'ACCEPTED') {
                     throw Error('Request not accepted');
                 }

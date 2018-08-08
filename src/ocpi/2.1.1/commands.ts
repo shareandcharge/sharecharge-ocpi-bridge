@@ -31,7 +31,7 @@ export class Commands {
         );
     }
 
-    public async startSession(location_id: string, token: IToken, req_id: string): Promise<ICommandResponse> {
+    public async startSession(location_id: string, evse_uid, token: IToken, req_id: string): Promise<ICommandResponse> {
         try {
             const result = await send({
                 method: 'POST',
@@ -40,8 +40,8 @@ export class Commands {
                 body: <IStartSession>{
                     response_url: this.createResponseUri('START_SESSION', req_id),
                     token,
-                    location_id
-                    // evse_uid
+                    location_id,
+                    evse_uid
                 }
             });
             return result;

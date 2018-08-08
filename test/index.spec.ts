@@ -40,19 +40,19 @@ describe('Bridge Interface', () => {
         }
         const token = config.get(`msp.tokens.${startParams.controller}`);
         it('should return session id if start ACCEPTED', async () => {
-            simulator.commands.startSuccess('LOC1', token, '55', 'ACCEPTED', 'ACCEPTED', true);
+            simulator.commands.startSuccess('LOC1', startParams.evseId, token, '55', 'ACCEPTED', 'ACCEPTED', true);
             const result = await bridge.start(startParams, '55');
             expect(result.success).to.equal(true);
             expect(result.data.sessionId).to.equal('55');
         });
         it('should return false if start request not ACCEPTED', async () => {
-            simulator.commands.startSuccess('LOC1', token, '55', 'REJECTED', '', true);
+            simulator.commands.startSuccess('LOC1', startParams.evseId, token, '55', 'REJECTED', '', true);
             const result = await bridge.start(startParams, '55');
             expect(result.success).to.equal(false);
             expect(result.data.message).to.equal('Request not accepted');
         });
         it('should return false if start confirmation not ACCEPTED', async () => {
-            simulator.commands.startSuccess('LOC1', token, '55', 'ACCEPTED', 'REJECTED', true);
+            simulator.commands.startSuccess('LOC1', startParams.evseId,token, '55', 'ACCEPTED', 'REJECTED', true);
             const result = await bridge.start(startParams, '55');
             expect(result.success).to.equal(false);
             expect(result.data.message).to.equal('Session start not accepted on charge point');
