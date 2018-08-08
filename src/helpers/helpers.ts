@@ -6,6 +6,7 @@ import { join as pathJoin } from 'path';
 import IToken from '../ocpi/2.1.1/interfaces/iToken';
 import { ISession, getConfigDir, prepareConfigLocation } from '@motionwerk/sharecharge-common';
 import { writeFileSync, readFileSync } from 'fs';
+import { randomBytes } from 'crypto';
 
 export default class Helpers {
 
@@ -48,7 +49,7 @@ export default class Helpers {
         const eMA = Math.random().toString(36).substr(2, 8).toUpperCase();
         const auth_id = `${country}-${party}-C${eMA}`;
         const token: IToken = {
-            uid: v4(),
+            uid: randomBytes(10).toString('hex').toUpperCase(),
             type: 'OTHER',
             auth_id,
             issuer: 'Share&Charge',
