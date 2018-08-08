@@ -6,12 +6,17 @@ import { Argv } from 'yargs';
 export default (yargs: Argv) => yargs
     .usage("Usage: commands <command>")
     .demandCommand(1)
-    .command('start <id>', 
+    .command('start <id> <evse>', 
         'Request session start by location ID', 
-        (yargs: Argv) => yargs.positional('id', {
-            describe: 'The id of the location to start charging at',
-            type: 'string',
-        }),
+        (yargs: Argv) => yargs
+            .positional('id', {
+                describe: 'The id of the location to start charging at',
+                type: 'string',
+            })
+            .positional('evse', {
+                describe: 'The UID of the EVSE to charge at',
+                type: 'string'
+            }),
         CmdService.start
     )
     .command('stop <id>', 'Request session stop by session ID',

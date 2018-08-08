@@ -16,7 +16,7 @@ export default class CmdService {
     static async start(argv: Arguments): Promise<void> {
         const requestId = Math.round(Math.random() * 1000000).toString();
         const token = Helpers.generateToken(config, '0x0');
-        const requested = await CmdService.ocpi.commands.startSession(argv.id, token, requestId);
+        const requested = await CmdService.ocpi.commands.startSession(argv.id, argv.evse, token, requestId);
         if (requested.result !== 'ACCEPTED') {
             console.log('Error requesting session start:', requested.result);
             process.exit();
