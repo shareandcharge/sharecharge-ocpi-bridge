@@ -38,9 +38,7 @@ export class Commands {
                             headers: {
                                 Authorization: 'Token ' + this.config.get('msp.credentials.token')
                             },
-                            body: {
-                                result: confirmResult
-                            },
+                            body: confirmResult,
                             json: true
                         });
                     }
@@ -84,9 +82,7 @@ export class Commands {
                             headers: {
                                 Authorization: 'Token ' + this.config.get('msp.credentials.token')
                             },
-                            body: {
-                                result: confirmResult
-                            },
+                            body: confirmResult,
                             json: true
                         });
                     }
