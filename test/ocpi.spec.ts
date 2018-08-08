@@ -379,7 +379,7 @@ describe('OCPI', () => {
             it('should send request to remotely start a session', async () => {
                 simulator.commands.startSuccess(location, evse, token, id, 'ACCEPTED', '');
                 const result = await ocpi.commands.startSession(location, evse, token, id);
-                expect(result.result).to.equal('ACCEPTED');
+                expect(result).to.equal('ACCEPTED');
             });
             it('should throw if ocpi response not 1000', async () => {
                 simulator.commands.startOcpiError(location, evse, token, id);
@@ -402,7 +402,7 @@ describe('OCPI', () => {
             it('should send request to remotely stop a session', async () => {
                 simulator.commands.stopSuccess(id, 'ACCEPTED', '');
                 const result = await ocpi.commands.stopSession(id);
-                expect(result.result).to.equal('ACCEPTED');
+                expect(result).to.equal('ACCEPTED');
             });
             it('should throw if ocpi response not 1000', async () => {
                 simulator.commands.stopOcpiError(id);

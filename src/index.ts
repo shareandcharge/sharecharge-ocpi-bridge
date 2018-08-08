@@ -88,7 +88,7 @@ export default class Bridge implements IBridge {
                     await this.ocpi.tokens.put(token);
                 }
                 const requested = await this.ocpi.commands.startSession(locationId, evseId, token, requestId);
-                if (requested.result !== 'ACCEPTED') {
+                if (requested !== 'ACCEPTED') {
                     throw Error('Request not accepted');
                 }
                 push.on('start', data => {
@@ -129,7 +129,7 @@ export default class Bridge implements IBridge {
                 const auth_id = this.config.get(`msp.tokens.${parameters.controller}`).auth_id;
                 const scSession = Helpers.readSession(auth_id);
                 const requested = await this.ocpi.commands.stopSession(scSession.sessionId);
-                if (requested.result !== 'ACCEPTED') {
+                if (requested !== 'ACCEPTED') {
                     throw Error('Request not accepted');
                 }
                 push.on('stop', data => {

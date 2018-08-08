@@ -26,7 +26,7 @@ export class Commands {
             token,
             location_id,
             evse_uid
-        }).reply(200, ocpiSuccess({ result: requestResult }));
+        }).reply(200, ocpiSuccess(requestResult));
         if (push) {
             const interval = setInterval(async () => {
                 if (req.isDone()) {
@@ -72,7 +72,7 @@ export class Commands {
         const req = this.host.post(this.endpoint + 'STOP_SESSION', <IStopSession>{
             response_url,
             session_id
-        }).reply(200, ocpiSuccess({ result: requestResult }));
+        }).reply(200, ocpiSuccess(requestResult));
         if (push) {
             const interval = setInterval(async () => {
                 if (req.isDone()) {

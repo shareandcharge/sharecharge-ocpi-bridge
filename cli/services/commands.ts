@@ -17,8 +17,8 @@ export default class CmdService {
         const requestId = Math.round(Math.random() * 1000000).toString();
         const token = Helpers.generateToken(config, '0x0');
         const requested = await CmdService.ocpi.commands.startSession(argv.id, argv.evse, token, requestId);
-        if (requested.result !== 'ACCEPTED') {
-            console.log('Error requesting session start:', requested.result);
+        if (requested !== 'ACCEPTED') {
+            console.log('Error requesting session start:', requested);
             process.exit();
         } else {
             console.log('Successfully requested start');
@@ -33,7 +33,7 @@ export default class CmdService {
 
     static async stop(argv: Arguments): Promise<void> {
         const requested = await CmdService.ocpi.commands.stopSession(argv.id);
-        if (requested.result !== 'ACCEPTED') {
+        if (requested !== 'ACCEPTED') {
             console.log('Error requesting session stop:', JSON.stringify(requested, null, 2));
         } else {
             console.log('Succesfully requested stop');

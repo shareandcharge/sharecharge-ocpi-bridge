@@ -31,7 +31,7 @@ export class Commands {
         );
     }
 
-    public async startSession(location_id: string, evse_uid, token: IToken, req_id: string): Promise<ICommandResponse> {
+    public async startSession(location_id: string, evse_uid, token: IToken, req_id: string): Promise<string> { // not ICommandResponse??
         try {
             const result = await send({
                 method: 'POST',
@@ -50,7 +50,7 @@ export class Commands {
         }
     }
 
-    public async stopSession(session_id: string): Promise<ICommandResponse> {
+    public async stopSession(session_id: string): Promise<string> {
         try {
             const result = await send({
                 method: 'POST',
