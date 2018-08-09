@@ -49,7 +49,7 @@ export default class Helpers {
         const eMA = Math.random().toString(36).substr(2, 8).toUpperCase();
         const auth_id = `${country}-${party}-C${eMA}`;
         const token: IToken = {
-            uid: randomBytes(10).toString('hex').toUpperCase(),
+            uid: randomBytes(9).toString('hex').toUpperCase(),
             type: 'OTHER',
             auth_id,
             issuer: 'Share&Charge',
