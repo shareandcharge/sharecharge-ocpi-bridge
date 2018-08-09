@@ -85,7 +85,7 @@ describe('Bridge Interface', () => {
         });
     });
 
-    context.only('#autoStop$', () => {
+    context('#autoStop$', () => {
         it('should notify core client of session auto stop and cdr', async () => {
             setTimeout(async () => await request({
                 method: 'POST',

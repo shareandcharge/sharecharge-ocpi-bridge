@@ -7,6 +7,7 @@ export default class SessionManager {
     static energyScheduler(sc: scSession, ocpi: ocpiSession): boolean {
         const max = parseInt(sc.tariffValue);
         const current = ocpi.kwh * 1000;
+        console.log(`${ocpi.id} consumption: ${current}/${max} watt hours`);
         return current >= max;
     }
 
@@ -15,6 +16,7 @@ export default class SessionManager {
         const start = new Date(ocpi.start_datetime).getTime() / 1000;   // convert to seconds
         const now = Date.now() / 1000;
         const current = Math.round(now - start);
+        console.log(`${ocpi.id} duration: ${current}/${max} seconds`);
         return current >= max;
     }
 
