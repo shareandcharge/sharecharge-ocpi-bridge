@@ -32,6 +32,7 @@ export class CDRs {
 
     public serve(): Router {
         this.router.get('/cdrs/:id', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
+            console.log('GET /cdrs/' + req.params.id);
             res.send(<IResponse>{
                 status_code: 3000,
                 status_message: 'CDRs not currently stored on the Share & Charge core client',
@@ -40,6 +41,7 @@ export class CDRs {
         });
         this.router.post('/cdrs', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             try {
+                console.log('POST /cdrs:', req.body);
                 const cdr: ICDR = req.body;
                 const endpoint = Helpers.getEndpointByIdentifier(this.config.get('msp.modules.endpoints'), 'cdrs');
                 const location = new URL(urlJoin(endpoint, cdr.id))

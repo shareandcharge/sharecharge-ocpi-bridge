@@ -22,6 +22,7 @@ export default class Bridge implements IBridge {
         this.ocpi = OCPI.getInstance(config);
         this.ocpi.startServer();
         push.on('session', (ocpiSession: OcpiSession) => {
+            console.log('Received async session:', ocpiSession.id);
             if (ocpiSession.status === 'COMPLETE') {
                 // push to core client
                 const scId = Helpers.reverseLocationLookup(config, ocpiSession.location.id);
@@ -52,6 +53,7 @@ export default class Bridge implements IBridge {
         });
         push.on('cdr', (cdr: OcpiCDR) => {
             // push to core client
+            console.log('Recieved async cdr:', cdr.id);
             const scId = Helpers.reverseLocationLookup(config, cdr.location.id);
             const scSession = Helpers.readSession(cdr.auth_id);
             this.cdr.next({
@@ -86,6 +88,7 @@ export default class Bridge implements IBridge {
                 if (!token) {
                     token = Helpers.generateToken(this.config, controller);
                     await this.ocpi.tokens.put(token);
+                    console.log(`New token created for ${controller}: ${token.uid}`);
                 }
                 const requested = await this.ocpi.commands.startSession(locationId, evseId, token, requestId);
                 if (requested !== 'ACCEPTED') {
@@ -99,7 +102,7 @@ export default class Bridge implements IBridge {
                             resolve({
                                 success: true,
                                 data: {
-                                    sessionId: requestId // 0x0 instead?
+                                    sessionId: requestId
                                 }
                             });
                         } else {

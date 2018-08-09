@@ -70,7 +70,7 @@ export class Commands {
     public serve(): Router {
         this.router.post('/commands/START_SESSION/:uid', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             try {
-                console.log(`POST /command/START_SESSION/${req.params.uid}`);
+                console.log(`POST /commands/START_SESSION/${req.params.uid}: ${req.body}`);
                 this.push.emit('start', { id: req.params.uid, success: req.body === 'ACCEPTED' });
                 res.send(<IResponse>{
                     status_code: 1000,
@@ -86,8 +86,8 @@ export class Commands {
         });
         this.router.post('/commands/STOP_SESSION/:uid', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
             try {
-                console.log(`POST /command/STOP_SESSION/${req.params.uid}`);
-                this.push.emit('stop', { id: req.params.uid, success: req.body === 'ACCEPTED' })
+                console.log(`POST /commands/STOP_SESSION/${req.params.uid}: ${req.body}`);
+                this.push.emit('stop', { id: req.params.uid, success: req.body === 'ACCEPTED' });
                 res.send(<IResponse>{
                     status_code: 1000,
                     timestamp: new Date()
