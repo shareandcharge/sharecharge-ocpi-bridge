@@ -15,39 +15,22 @@ export default class Bridge implements IBridge {
     private autoStop = new Subject<IResult>();
     public autoStop$ = this.autoStop.asObservable();
 
-    private cdr = new Subject<ICDR>();
-    public cdr$ = this.cdr.asObservable();
-
     constructor(public config: ConfigStore = new ConfigStore('ocpi')) {
         this.ocpi = OCPI.getInstance(config);
         this.ocpi.startServer();
-        push.on('session', (ocpiSession: OcpiSession) => {
+        push.on('session', async (ocpiSession: OcpiSession) => {
             console.log('Received async session:', ocpiSession.id);
-            if (ocpiSession.status === 'COMPLETE') {
-                // push to core client
-                const scId = Helpers.reverseLocationLookup(config, ocpiSession.location.id);
-                const scSession = Helpers.readSession(ocpiSession.auth_id);
-                this.autoStop.next({
-                    success: true,
-                    data: {
-                        session: {
-                            scId,
-                            evseId: scSession.evseId,
-                            controller: scSession.controller,
-                            tariffId: scSession.tariffId,
-                            tariffValue: scSession.tariffValue,
-                        },
-                        sessionId: ocpiSession.id   
-                    }
-                })
-            } else {
+            if (ocpiSession.status !== 'COMPLETED') {
                 // write the id once we get it so that the session can be stopped
                 const scSession = Helpers.readSession(ocpiSession.auth_id);
                 if (!scSession.sessionId) {
+                    console.log('Saving session id:', ocpiSession.id);
                     scSession.sessionId = ocpiSession.id;
                     Helpers.writeSession(ocpiSession.auth_id, scSession);
-                    const manager = new SessionManager(scSession, this.ocpi);
-                    manager.start(this.config.get('pullInterval'));
+                }
+                const completed = SessionManager.isComplete(scSession, ocpiSession);
+                if (completed) {
+                    await this.ocpi.commands.stopSession(ocpiSession.id);
                 }
             }
         });
@@ -56,11 +39,18 @@ export default class Bridge implements IBridge {
             console.log('Recieved async cdr:', cdr.id);
             const scId = Helpers.reverseLocationLookup(config, cdr.location.id);
             const scSession = Helpers.readSession(cdr.auth_id);
-            this.cdr.next({
-                scId,
-                evseId: scSession.evseId,
-                price: cdr.total_cost * 100,
-                chargedUnits: cdr.total_energy * 1000
+            this.autoStop.next({
+                success: true,
+                data: {
+                    sessionId: scSession.sessionId,
+                    session: scSession,
+                    cdr: {
+                        scId,
+                        evseId: scSession.evseId,
+                        price: cdr.total_cost * 100,
+                        chargedUnits: cdr.total_energy * 1000
+                    }
+                }
             });
         });
     }

@@ -85,29 +85,8 @@ describe('Bridge Interface', () => {
         });
     });
 
-    context('#autoStop$', () => {
-        it('should notify core client of session auto stop', async () => {
-            setTimeout(async () => await request({
-                method: 'PUT',
-                uri: 'http://localhost:3001/ocpi/emsp/2.1.1/sessions/de/sc/123',
-                headers: {
-                    Authorization: 'Token ' + config.get('msp.credentials.token')
-                },
-                body: require('./config/session.json'),
-                json: true
-            }), 300);
-            return new Promise((resolve, reject) => {
-                bridge.autoStop$.subscribe(autoStop => {
-                    console.log('autostop', autoStop);
-                    expect(autoStop.data.sessionId).to.equal('123');
-                    resolve();
-                });
-            });
-        });
-    });
-
-    context('#cdr$', () => {
-        it('should notify core client of async cdr receipt', async () => {
+    context.only('#autoStop$', () => {
+        it('should notify core client of session auto stop and cdr', async () => {
             setTimeout(async () => await request({
                 method: 'POST',
                 uri: 'http://localhost:3001/ocpi/emsp/2.1.1/cdrs',
@@ -116,11 +95,11 @@ describe('Bridge Interface', () => {
                 },
                 body: require('./config/cdr.json'),
                 json: true
-            }), 100);
+            }), 300);
             return new Promise((resolve, reject) => {
-                bridge.cdr$.subscribe(cdr => {
-                    expect(cdr.price).to.equal(400);
-                    expect(cdr.scId).to.equal('0x01')
+                bridge.autoStop$.subscribe(autoStop => {
+                    console.log('autostop', autoStop);
+                    expect(autoStop.data.sessionId).to.equal('123');
                     resolve();
                 });
             });

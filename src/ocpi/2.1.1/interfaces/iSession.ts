@@ -18,6 +18,6 @@ export default interface ISession {
         } 
     }[];
     total_cost: number;
-    status: 'ACTIVE' | 'COMPLETE' | 'INVALID' | 'PENDING';
+    status: 'ACTIVE' | 'COMPLETED' | 'INVALID' | 'PENDING';
     last_updated: Date;
 }
