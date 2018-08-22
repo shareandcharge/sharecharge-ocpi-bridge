@@ -28,7 +28,7 @@ export class Modules {
 
     public serve(): Router {
         this.router.get('/', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            console.log('GET modules');
+            console.log('GET /modules');
             try {
                 res.send(<IResponse>{
                     status_code: 1000,

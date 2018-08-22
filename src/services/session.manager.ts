@@ -1,6 +1,5 @@
 import { ISession as scSession } from '@motionwerk/sharecharge-common';
 import ocpiSession from '../ocpi/2.1.1/interfaces/iSession';
-import { OCPI } from './ocpi';
 
 export default class SessionManager {
 

@@ -28,7 +28,7 @@ export class Versions {
 
     public serve(): Router {
         this.router.get('/versions', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            console.log('GET versions');
+            console.log('GET /versions');
             try {
                 res.send(<IResponse>{
                     status_code: 1000,

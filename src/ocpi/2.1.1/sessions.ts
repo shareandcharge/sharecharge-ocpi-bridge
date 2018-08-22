@@ -55,7 +55,7 @@ export class Sessions {
             }
         });
         this.router.put('/sessions/:country/:party/:id', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            console.log(`PUT /session/${req.params.country}/${req.params.party}/${req.params.id}`);
+            console.log(`PUT /sessions/${req.params.country}/${req.params.party}/${req.params.id}`);
             try {
                 const session: ISession = req.body;
                 this.push.emit('session', session);
@@ -73,7 +73,7 @@ export class Sessions {
             }
         });
         this.router.patch('/sessions/:country/:party/:id', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            console.log(`PATCH /session/${req.params.country}/${req.params.party}/${req.params.id}: ${JSON.stringify(req.body, null, 2)}`);
+            console.log(`PATCH /sessions/${req.params.country}/${req.params.party}/${req.params.id}: ${JSON.stringify(req.body, null, 2)}`);
             try {
                 const sessions = await this.get();
                 const session = sessions.filter(s => s.id === req.params.id)[0];

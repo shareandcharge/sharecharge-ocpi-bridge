@@ -7,35 +7,40 @@ Version: `2.1.1`
 [Read the OCPI Specification here](https://github.com/ocpi/ocpi).
 
 
-### Setup
+## Setup
 
-Install:
+**Note: this is already done for the VWFS pilot**
+
+
+1. Install (for best results use yarn globally):
 ```
-npm install -g @motionwerk/sharecharge-ocpi-bridge
+sudo yarn global add @motionwerk/sharecharge-ocpi-bridge
 ```
 
-Initialize:
+2. Initialize:
 ```
 sc-ocpi init
 ```
 
-Register with Charge Point Operator:
+3. Register with Charge Point Operator:
 ```
 sc-ocpi register
 ```
 
-Edit Core Client configuration to use the OCPI bridge:
+4. Edit Core Client configuration to use the OCPI bridge:
 ```
 sc-cli config set bridgePath @motionwerk/sharecharge-ocpi-bridge
 ```
 
-Run the Core Client:
+5. Run the Core Client:
 ```
 sc-cc start
 ```
 
 
-### Registration Process
+## Registration Process
+
+**Note: this is already done for the VWFS pilot**
 
 *Offline:*
 
@@ -56,32 +61,64 @@ sc-cc start
 8. Receive with TOKEN_B
 
 
-### Simulation
+## Notes
 
-A mock CPO server can be run using:
+### Locations
 
-```
-ts-node test/simulation/cpo-server/app.ts
-```
+The OCPI command modules requires the `uid` of the `evse` to start a charge. It is therefore necessary to overwrite the `evse_id` of the OCPI location data, because the MSP driver app reads and uses this value. 
 
-This will start listening on port 3005:
+Therefore, an EVSE changes from:
 
-```
-curl http://localhost:3005/ocpi/cpo/versions
-```
-
-Note that some endpoints, e.g. POST /credentials will request responses from the eMSP server before resolving the request. To run the eMSP server:
-
-```
-ts-node test/simulation/msp-server/app.ts
-```
-
-This will start listening on port 3001:
-```
-curl http://localhost:3001/ocpi/emsp/versions
+```json
+{
+        "uid": "17510039",
+        "evse_id": "NL*EVBOX*EEVB-P18090550*17510039",
+        "status": "CHARGING",
+        "status_schedule": null,
+        "capabilities": null,
+        "connectors": [
+        ]
+}
 ```
 
-### Troubleshooting
+to:
+
+```json
+{
+        "uid": "17510039",
+        "evse_id": "17510039",
+        "status": "CHARGING",
+        "status_schedule": null,
+        "capabilities": null,
+        "connectors": [
+        ]
+}
+```
+
+Additionally, the bridge needs the location ID to start charging. This is not provided by the Core Client. A mapping is necessary to translate the `scId` into a location `id`:
+
+```
+sc-ocpi config set locations.0x123 PB-18090550
+```
+
+Where `0x123` is the `scId` and `PB-18090550` is the location ID. 
+
+Validate the location was mapped successfully:
+
+```
+sc-ocpi config get locations
+```
+
+Which should return:
+
+```json
+{
+    "0x123": "PB-18090550"
+}
+```
+
+
+## Troubleshooting
 
 1. Permission denied when trying to access `.config/configstore/ocpi.json`
 
@@ -90,3 +127,4 @@ This occurs when using sudo on a global npm/yarn install. Change the permissions
 sudo chmod 777 .config
 sudo chmod 777 .config/configstore/
 ```
+

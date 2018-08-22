@@ -52,7 +52,7 @@ export class Credentials {
 
     public serve(): Router {
         this.router.get('/credentials', authenticate(this.config.get('msp.credentials.token')), async (req: Request, res: Response) => {
-            console.log('GET credentials');
+            console.log('GET /credentials');
             try {
                 res.send(<IResponse>{
                     status_code: 1000,
